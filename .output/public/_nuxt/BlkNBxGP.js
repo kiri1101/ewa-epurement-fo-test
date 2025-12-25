@@ -1,0 +1,1 @@
+import{_ as o,c as t,o as r,a as n,j as a}from"./B5jmmgch.js";const c={},l={class:"h-dvh w-screen"};function d(s,e){return r(),t("main",l,[e[0]||(e[0]=n("div",null,null,-1)),n("div",null,[a(s.$slots,"default")])])}const f=o(c,[["render",d]]);export{f as default};

@@ -1,0 +1,1 @@
+import{k as t,m as n,u as o,n as s,c,o as i}from"./B5jmmgch.js";const u=t({__name:"dashboard",setup(p){const e=s(),{t:a}=n();return o({title:`${a("meta.title.dashboard")} - ${e.public.app.name}`,meta:[{name:"description",content:"My design project application."}]}),(r,d)=>(i(),c("div",null,"dashboard"))}});export{u as default};

@@ -1,0 +1,59 @@
+const resource = {
+  "meta": {
+    "title": {
+      "login": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Se connecter" } },
+      "forgot_password": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Mot de passe oublier" } },
+      "update_password": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Mettre à jour le mot de passe" } },
+      "dashboard": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Tableau de bord" } }
+    }
+  },
+  "page": {
+    "login": {
+      "form_title": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Connectez-vous" } },
+      "intro_msg": {
+        "part1": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Faites votre" } },
+        "part2": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "demande de transfer en ligne" } },
+        "part3": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "dès maintenant!" } }
+      },
+      "forgot_password": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Have you forgotten your password?" } }
+    },
+    "forgot_password": {
+      "form_title": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Vérification 2Fa" } },
+      "intro_msg": {
+        "part1": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Un code de vérification a été envoyé à votre email" } },
+        "part2": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Entrez-le ci-dessous." } }
+      },
+      "resend_code": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Renvoyer le code dans:" } },
+      "resend_code_link": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Code non reçu?" } },
+      "resend_code_button": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Renvoyer le code" } }
+    },
+    "update_password": {
+      "form_title": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Mettre à jour votre mot de passe" } }
+    }
+  },
+  "button": {
+    "login": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Connexion" } },
+    "verify_code": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Vérifier le code" } },
+    "update_password": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Mettre à jour le mot de passe" } }
+  },
+  "placeholder": {
+    "pseudo": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Pseudo ou email" } },
+    "new_password": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Nouveau mot de passe" } },
+    "confirm_new_password": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Confirmer le nouveau mot de passe" } }
+  },
+  "success": {
+    "welcome": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Bienvenu à :bankName" } }
+  },
+  "validation": {
+    "required": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Ce champ est obligatoire." } },
+    "min": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Ce champ est réquis et doit contenir plus de :value caractères." } },
+    "invalidLang": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Veuillez fournir une lang valide" } },
+    "number": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Ce champ doit contenir des chiffres." } },
+    "payment_method": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Mode de paiement invalide" } },
+    "bad_otp": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "OTP incorrecte" } },
+    "pwd_confirm_failed": { "t": 0, "b": { "t": 2, "i": [{ "t": 3 }], "s": "Les mots de passe ne correspondent pas." } }
+  }
+};
+
+export { resource as default };
+//# sourceMappingURL=fr-COtZd6AB.mjs.map
