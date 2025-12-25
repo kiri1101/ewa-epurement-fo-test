@@ -1,0 +1,95 @@
+@import "tailwindcss";
+@import './font.css';
+
+@theme {
+  /*** Montserrat font loaded locally ***/
+  --font-montserrat: 'Montserrat', sans-serif;
+
+
+  /*** App global color ***/
+  --color-app: #fff;
+  /*app global background color*/
+  --color-link-decoration: #fff;
+  /*app global link decoration color*/
+  --color-link: #fff;
+  /*app global text link color*/
+  --color-link-hover-decoration: #00741D;
+  /*app global link decoration color*/
+  --color-link-hover: #00741D;
+  /*app global text link color*/
+  --color-validation-error: #D91414;
+
+
+  /*** Authentication page color code ***/
+  --color-auth-page: #001051;
+  /*auth page background color*/
+  --color-auth-text-primary: #fff;
+  /*auth page text primary color*/
+  --color-auth-text-secondary: #00741D;
+  /*auth page text secondary color*/
+  --color-auth-navbar: #fff;
+  /*auth layout navbar background color*/
+  --color-auth-navbar-border: #00741D;
+  /*auth layout navbar border color*/
+  --color-auth-form-border: #7FB98E;
+  /*sign in form border color*/
+  --color-auth-form-title-decoration: #00741D;
+  /*sign in form title decoration color*/
+  --color-auth-form-pwd-eye: #D91414;
+  /*sign in form password input svg color*/
+  --color-auth-form-button: #00741D;
+  /*sign in form button color*/
+  --color-auth-form-button-label: #fff;
+  /*sign in form button label color*/
+  --color-auth-navbar-logo: #fff;
+  /*auth layout navbar logo background color*/
+  --color-auth-effect: #93c5fd;
+  /*auth layout page effect color*/
+  --color-auth-countdown: #D91414;
+  /*auth layout countdown color*/
+
+
+  /*** Translate button color code ***/
+  --color-translate: #fff;
+  /*translate button color*/
+  --color-translate-border: #B7B7B7;
+  /*translate button border color*/
+  --color-translate-text: #000;
+  /*translate button text color*/
+
+
+  /*** Input component color code ***/
+  --color-input-placeholder: #777978;
+  /*input placeholder color*/
+  --color-input: #ffffff0d;
+  /*input background color*/
+  --color-input-focus: #ffffff;
+  /*input focus background color*/
+  --color-input-border: #0d0d0d33;
+  /*input border color*/
+  --color-input-border-focus: #ffffff;
+  /*input focus border color*/
+  --color-input-text: #ffffff;
+  /*input text color*/
+  --color-input-focus-text: #000000;
+  /*input focus text color*/
+  --color-input-focus-ring: #ffffff33;
+  /*input focus ring color*/
+  --color-input-pwd-svg: #94a3b8;
+  /*input password svg color*/
+
+
+  /*** Button component color code ***/
+  --color-button-main: #00741D;
+  /*main button background color*/
+  --color-button-main-hover: #005a17;
+  /*main button hover background color*/
+  --color-button-main-border: #00741D;
+  /*main button border color*/
+  --color-button-main-hover-border: #ffffff55;
+  /*main button hover border color*/
+  --color-button-main-label: #ffffff;
+  /*main button label color*/
+  --color-button-main-hover-label: #ffffff;
+  /*main button hover label color*/
+}
