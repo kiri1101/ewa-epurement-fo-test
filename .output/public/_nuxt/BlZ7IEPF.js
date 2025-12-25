@@ -1,0 +1,1 @@
+import{_ as t,c as s,o as a,j as n}from"./WX7ubvYb.js";const o={},r={class:"w-screen antialiased h-dvh font-montserrat bg-app"};function c(e,_){return a(),s("main",r,[n(e.$slots,"default")])}const d=t(o,[["render",c]]);export{d as default};
