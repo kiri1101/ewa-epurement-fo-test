@@ -1,1 +1,0 @@
-import{_ as t,c as s,o as a,k as n}from"./DYQOKOb9.js";const o={},r={class:"w-screen antialiased h-dvh font-montserrat bg-app"};function c(e,_){return a(),s("main",r,[n(e.$slots,"default")])}const d=t(o,[["render",c]]);export{d as default};

@@ -1,1 +1,0 @@
-import{E as s,F as r,r as o}from"./DYQOKOb9.js";const c=s("authUser",()=>{const e=o(null);return{state:e,getUserSnapShot:()=>e.value?e.value:null,store:t=>e.value=t,clear:()=>e.value=null}},{persist:{storage:r.cookies()}});export{c as u};
