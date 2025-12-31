@@ -72,6 +72,9 @@ const saveUser = async (data: AuthResponse): Promise<AuthData> => {
         },
       }
     } catch (error) {
+      console.error('save user auth error: ', error)
+      console.log('save user auth log error: ', error)
+
       throw createError({
         status: 500,
         statusText: 'Failed to create user record',
