@@ -1,1 +1,0 @@
-import{F as o,G as s,r as a}from"./wCqVNk7m.js";const i=o("reset.pwd.form",()=>{const e=a({otp:"",secret:"",secret_confirm:""});return{form:e,updateFormField:(t,r)=>{r&&(e.value[t]=r)},reset:()=>e.value={otp:"",secret:"",secret_confirm:""}}},{persist:{storage:s.localStorage()}});export{i as u};
