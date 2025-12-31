@@ -9,6 +9,10 @@ import { resolveComponent, createElementBlock, openBlock, mergeProps, createComm
 import '@primeuix/utils/object';
 import '@primeuix/utils/eventbus';
 import '../_/nitro.mjs';
+import 'drizzle-orm';
+import 'drizzle-orm/libsql';
+import '@libsql/client';
+import 'drizzle-orm/sqlite-core';
 import 'node:http';
 import 'node:https';
 import 'node:events';

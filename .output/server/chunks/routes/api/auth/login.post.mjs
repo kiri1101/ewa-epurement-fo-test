@@ -1,5 +1,9 @@
-import { d as defineEventHandler, u as useRuntimeConfig, a as authOtp, b as authTokens, r as readBody, l as loadLocale, f as fetch, c as readValidatedBody, e as errorMap } from '../../../_/nitro.mjs';
+import { d as defineEventHandler, u as useRuntimeConfig, r as readBody, l as loadLocale, f as fetch, a as readValidatedBody, c as createError, s as saveUser, e as errorMap } from '../../../_/nitro.mjs';
 import * as z from 'zod';
+import 'drizzle-orm';
+import 'drizzle-orm/libsql';
+import '@libsql/client';
+import 'drizzle-orm/sqlite-core';
 import 'node:http';
 import 'node:https';
 import 'node:events';
@@ -107,72 +111,69 @@ import '@primeuix/styled';
 import 'node:url';
 import 'node:crypto';
 
-const login_post = defineEventHandler(async (event) => {
-  const config = useRuntimeConfig(event);
-  const otpCookieStore = authOtp(event);
-  const tokenCookieStore = authTokens(event);
-  const reqBody = await readBody(event);
-  const lang = reqBody.lang === "fr" ? "fr" : "en";
-  const t = await loadLocale(lang);
-  const loginSchema = z.object({
-    username: z.string({
-      error: () => ({ message: t.required })
-    }).min(Number(config.private.validation.zod.min), {
-      message: String(t.min).replaceAll(
-        ":value",
-        String(config.private.validation.zod.min)
-      )
-    }),
-    secret: z.string({
-      error: () => ({ message: t.required })
-    }).min(Number(config.private.validation.zod.min), {
-      message: String(t.min).replaceAll(
-        ":value",
-        String(config.private.validation.zod.min)
-      )
-    }),
-    lang: z.literal(["en", "fr"], {
-      error: () => ({ message: t.invalidLang })
-    })
-  });
-  const api = fetch(event);
-  const payload = await readValidatedBody(
-    event,
-    (body) => loginSchema.safeParse(body)
-  );
-  let respError = {
-    response: {},
-    code: 0
-  };
-  const response = payload.success ? await api(config.private.auth.login, {
-    method: "POST",
-    body: {
-      pseudo: payload.data.username.trim(),
-      password: payload.data.secret.trim(),
-      lang: payload.data.lang.toUpperCase(),
-      origin: config.private.origin.toUpperCase()
-    }
-  }).catch((error) => {
-    respError.response = error.data;
-    respError.code = error.status;
-    return null;
-  }) : null;
-  if (response) {
-    otpCookieStore.clear();
-    otpCookieStore.save(response == null ? void 0 : response.data.otp);
-    response == null ? true : delete response.data.otp;
-    tokenCookieStore.save({
-      token: String(response == null ? void 0 : response.data.token),
-      refreshToken: String(response == null ? void 0 : response.data.refreshToken),
-      expired_at: Number(response == null ? void 0 : response.data.expired_at)
+const login_post = defineEventHandler(
+  async (event) => {
+    const config = useRuntimeConfig(event);
+    const reqBody = await readBody(event);
+    const lang = reqBody.lang === "fr" ? "fr" : "en";
+    const t = await loadLocale(lang);
+    let output = null;
+    const loginSchema = z.object({
+      username: z.string({
+        error: () => ({ message: t.required })
+      }).min(Number(config.private.validation.zod.min), {
+        message: String(t.min).replaceAll(
+          ":value",
+          String(config.private.validation.zod.min)
+        )
+      }),
+      secret: z.string({
+        error: () => ({ message: t.required })
+      }).min(Number(config.private.validation.zod.min), {
+        message: String(t.min).replaceAll(
+          ":value",
+          String(config.private.validation.zod.min)
+        )
+      }),
+      lang: z.literal(["en", "fr"], {
+        error: () => ({ message: t.invalidLang })
+      })
     });
+    const api = fetch(event);
+    const payload = await readValidatedBody(
+      event,
+      (body) => loginSchema.safeParse(body)
+    );
+    const response = payload.success ? await api(config.private.api.auth.login, {
+      method: "POST",
+      body: {
+        pseudo: payload.data.username.trim(),
+        password: payload.data.secret.trim(),
+        lang: payload.data.lang.toUpperCase(),
+        origin: config.private.origin.toUpperCase()
+      }
+    }).catch((error) => {
+      throw createError({
+        statusCode: 500,
+        statusText: t.server_api_failed
+      });
+    }) : null;
+    if (response) {
+      if (String(response == null ? void 0 : response.pesake.code).length > 0) {
+        throw createError({
+          statusCode: 500,
+          statusText: response == null ? void 0 : response.pesake.details.pesakeDetail
+        });
+      } else {
+        output = await saveUser(event, response == null ? void 0 : response.data);
+      }
+    }
+    return {
+      validError: payload.error ? errorMap(payload.error.issues) : null,
+      apiResponse: output
+    };
   }
-  return {
-    validError: payload.error ? errorMap(payload.error.issues) : null,
-    apiResponse: response,
-    errResponse: respError.code !== 0 ? respError : null
-  };
-});
+);
 
 export { login_post as default };
 //# sourceMappingURL=login.post.mjs.map

@@ -1,5 +1,9 @@
-import { d as defineEventHandler, u as useRuntimeConfig, a as authOtp, r as readBody, l as loadLocale, f as fetch, c as readValidatedBody, e as errorMap } from '../../../../_/nitro.mjs';
+import { d as defineEventHandler, u as useRuntimeConfig, r as readBody, l as loadLocale, f as fetch, a as readValidatedBody, c as createError, e as errorMap } from '../../../../_/nitro.mjs';
 import * as z from 'zod';
+import 'drizzle-orm';
+import 'drizzle-orm/libsql';
+import '@libsql/client';
+import 'drizzle-orm/sqlite-core';
 import 'node:http';
 import 'node:https';
 import 'node:events';
@@ -109,8 +113,6 @@ import 'node:crypto';
 
 const password_post = defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
-  const otpCookie = authOtp(event);
-  const otpSent = otpCookie.getOtpSnapShot();
   const reqBody = await readBody(event);
   const lang = reqBody.lang === "fr" ? "fr" : "en";
   const t = await loadLocale(lang);
@@ -122,8 +124,6 @@ const password_post = defineEventHandler(async (event) => {
         ":value",
         String(config.private.validation.zod.otp)
       )
-    }).refine((val) => Number(val) === Number(otpSent), {
-      error: String(t.bad_otp)
     }),
     secret: z.string({
       error: () => ({ message: t.required })
@@ -150,11 +150,7 @@ const password_post = defineEventHandler(async (event) => {
     event,
     (body) => loginSchema.safeParse(body)
   );
-  let respError = {
-    response: {},
-    code: 0
-  };
-  const response = payload.success ? await api(config.private.auth.resetPwd, {
+  const response = payload.success ? await api(config.private.api.auth.resetPwd, {
     method: "POST",
     body: {
       codeOtp: payload.data.otp.trim(),
@@ -165,17 +161,22 @@ const password_post = defineEventHandler(async (event) => {
       origin: config.private.origin.toUpperCase()
     }
   }).catch((error) => {
-    respError.response = error.data;
-    respError.code = error.status;
-    return null;
+    throw createError({
+      statusCode: 500,
+      statusText: t.server_api_failed
+    });
   }) : null;
-  if (!payload.error || respError.code === 0) {
-    otpCookie.clear();
+  if (response) {
+    if (String(response == null ? void 0 : response.pesake.code).length > 0) {
+      throw createError({
+        statusCode: 500,
+        statusText: response == null ? void 0 : response.pesake.details.pesakeDetail
+      });
+    }
   }
   return {
     validError: payload.error ? errorMap(payload.error.issues) : null,
-    apiResponse: response,
-    errResponse: respError.code !== 0 ? respError : null
+    apiResponse: response
   };
 });
 

@@ -1,6 +1,10 @@
 import { B as BaseStyle, l as script$9 } from './server.mjs';
 import { createElementBlock, openBlock, mergeProps, renderSlot, createCommentVNode } from 'vue';
 import '../_/nitro.mjs';
+import 'drizzle-orm';
+import 'drizzle-orm/libsql';
+import '@libsql/client';
+import 'drizzle-orm/sqlite-core';
 import 'node:http';
 import 'node:https';
 import 'node:events';

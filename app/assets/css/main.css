@@ -18,6 +18,8 @@
   --color-link-hover: #00741D;
   /*app global text link color*/
   --color-validation-error: #D91414;
+  /*toast validation error color*/
+  --color-page-title-text: #001051;
 
 
   /*** Authentication page color code ***/
@@ -73,16 +75,24 @@
   /*input text color*/
   --color-input-focus-text: #000000;
   /*input focus text color*/
-  --color-input-focus-ring: #ffffff33;
+  --color-input-focus-ring: #ffffff53;
   /*input focus ring color*/
   --color-input-pwd-svg: #94a3b8;
   /*input password svg color*/
+  --color-input-profile-label: #797171;
+  /*User profile input label color*/
+  --color-input-disabled: #F4F4F4;
+  /*input disabled background color*/
+  --color-input-disabled-text: #0D0D0D;
+  /*input disabled text color*/
 
 
   /*** Button component color code ***/
   --color-button-main: #00741D;
   /*main button background color*/
   --color-button-main-hover: #005a17;
+  /*main button hover background color*/
+  --color-button-outline-hover: #dcfce7;
   /*main button hover background color*/
   --color-button-main-border: #00741D;
   /*main button border color*/
@@ -92,4 +102,68 @@
   /*main button label color*/
   --color-button-main-hover-label: #ffffff;
   /*main button hover label color*/
+  --color-button-outline-label: #00741D;
+  /*main button label color*/
+  --color-button-outline-hover-label: #005a17;
+  /*main button hover label color*/
+  --color-button-dashboard-profile: #001051;
+  /*dashboard nav profile button background color*/
+  --color-button-green: #e3f9ea;
+  /*badge background success color*/
+  --color-button-red: #d91414;
+  /*badge background danger color*/
+  --color-button-red-hover: #d9141480;
+  /*badge background danger hover color*/
+  --color-button-cream-white: #ffffff63;
+
+
+  /*** Dashboard layout color code ***/
+  --color-sidebar-menu: #001051;
+  /*main sidebar background color*/
+  --color-sidebar-text-primary: #fff;
+  /*sidebar text color*/
+  --color-sidebar-text-active: #00741D;
+  /*sidebar text active color*/
+  --color-sidebar-logo-border: #fff;
+  /*sidebar logo box border color*/
+  --color-sidebar-svg: #fff;
+  /*sidebar menu icon color*/
+  --color-sidebar-svg-hover: #00741D;
+  /*sidebar menu icon hover color*/
+  --color-dashboard-nav: #000;
+  /*dashboard nav background color*/
+  --color-stat-total-demand: #ddf8e5;
+  /*total demand stat background color*/
+  --color-stat-pending-demand: #edf0ff;
+  /*pending demand stat background color*/
+  --color-stat-closed-demand: #f7f9c2;
+  /*closed demand stat background color*/
+  --color-stat-required-action: #e3e4e3;
+  /*required action stat background color*/
+
+
+  /**Border color**/
+  --color-border-black: #000;
+  --color-border-dark: #00000036;
+  --color-border-green: #00741D;
+  --color-border-brown: #b2b2b2;
+  --color-border-dark-brown: #797171;
+  --color-border-focus-brown: #79717133;
+  --color-border-dark-blue: #001051;
+  --color-border-light-brown: #E2E2E2;
+
+
+  /**Profile layout color code**/
+  --color-profile: #f2f4ff;
+  /*profile image default background color*/
+  --color-profile-svg: #797171;
+  /*profile svg background color*/
+  --color-profile-svg-hover: #fff;
+  /*profile svg hover background color*/
+  --color-sidebar: #f3f2f2;
+  /*profile sidebar menu hover background color*/
+  --color-sidebar-hover: #00741D;
+  /*profile menu hover color*/
+  --color-profile-manager: #F2F4FF;
+  --color-account-manager-block: #F3F3F3;
 }

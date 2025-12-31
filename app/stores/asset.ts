@@ -1,11 +1,11 @@
 export const useAssetStore = defineStore(
   'asset',
   () => {
-    const list = ref<object>({})
+    const list = ref<any>({})
 
     const hasAssets = computed(() => Object.keys(list.value).length > 0)
 
-    const setAssets = (content: object) => (list.value = content)
+    const setAssets = (content: any) => (list.value = content)
 
     const resetAssets = () => (list.value = {})
 

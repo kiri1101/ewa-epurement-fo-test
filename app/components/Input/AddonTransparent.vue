@@ -12,7 +12,7 @@ const pt = {
   </input-group-addon>
 </template>
 
-<style>
+<style scoped>
 .p-inputgroupaddon {
   background: var(--color-input) !important;
   border: 1px solid var(--color-input-border) !important;

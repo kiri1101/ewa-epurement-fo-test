@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import type { ZodValidationError } from '~~/shared/utils/model'
 
+definePageMeta({
+  middleware: ['authenticated'],
+})
+
 const config = useRuntimeConfig()
 const { t, locale } = useI18n()
-const { e, s } = useNotify()
+const { e } = useNotify()
 const { $apiFetch } = useNuxtApp() as any
-const authStore = useAuthStore()
 const resetPwdStore = useResetPwdFormStore()
 const isSecretInvalid = ref(false)
 const isLoading = ref(false)
@@ -34,8 +37,8 @@ const submit = async () => {
   if (!isSecretInvalid.value) {
     showLoader()
     try {
-      const { apiResponse, errResponse, validError } = await $apiFetch(
-        '/api/auth/update/password',
+      const { apiResponse, validError } = await $apiFetch(
+        config.public.api.updatePwd,
         {
           method: 'POST',
           body: {
@@ -55,13 +58,13 @@ const submit = async () => {
       /** handle api response */
       if (apiResponse) {
         let output
-        if (String(apiResponse.pesake.detail).trim().length > 0) {
-          output = e(apiResponse.pesake.detail)
+        if (String(apiResponse.pesake.code).length > 0) {
+          output = e(apiResponse.pesake.details.pesakeDetail)
         } else {
           // flush reset password form store
           resetPwdStore.reset()
           //redirect to dashboard
-          output = navigateTo('/dashboard')
+          output = navigateTo(config.public.page.clientBoard)
         }
         return output
       }
@@ -70,7 +73,6 @@ const submit = async () => {
       hideLoader()
     }
   }
-  // await navigateTo('/dashboard')
 }
 </script>
 

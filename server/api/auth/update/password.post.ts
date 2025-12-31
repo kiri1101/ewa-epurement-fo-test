@@ -5,8 +5,6 @@ import type { H3Event } from 'h3'
 
 export default defineEventHandler(async (event: H3Event) => {
   const config = useRuntimeConfig(event)
-  const otpCookie = authOtp(event)
-  const otpSent = otpCookie.getOtpSnapShot()
 
   const reqBody = await readBody(event)
   const lang = (reqBody.lang === 'fr' ? 'fr' : 'en') as 'en' | 'fr'
@@ -22,9 +20,6 @@ export default defineEventHandler(async (event: H3Event) => {
           ':value',
           String(config.private.validation.zod.otp)
         ),
-      })
-      .refine(val => Number(val) === Number(otpSent), {
-        error: String(t.bad_otp),
       }),
     secret: z
       .string({
@@ -57,13 +52,8 @@ export default defineEventHandler(async (event: H3Event) => {
     loginSchema.safeParse(body)
   )
 
-  let respError = {
-    response: {},
-    code: 0,
-  }
-
   const response: ApiResponse | null = payload.success
-    ? ((await api(config.private.auth.resetPwd, {
+    ? ((await api(config.private.api.auth.resetPwd, {
         method: 'POST',
         body: {
           codeOtp: payload.data.otp.trim(),
@@ -74,20 +64,24 @@ export default defineEventHandler(async (event: H3Event) => {
           origin: config.private.origin.toUpperCase(),
         },
       }).catch(error => {
-        respError.response = error.data
-        respError.code = error.status
-        return null
+        throw createError({
+          statusCode: 500,
+          statusText: t.server_api_failed,
+        })
       })) as ApiResponse | null)
     : null
 
-  if (!payload.error || respError.code === 0) {
-    /** clear OTP in server cookies */
-    otpCookie.clear()
+  if (response) {
+    if (String(response?.pesake.code).length > 0) {
+      throw createError({
+        statusCode: 500,
+        statusText: response?.pesake.details.pesakeDetail,
+      })
+    }
   }
 
   return {
     validError: payload.error ? errorMap(payload.error.issues) : null,
     apiResponse: response,
-    errResponse: respError.code !== 0 ? respError : null,
   }
 })

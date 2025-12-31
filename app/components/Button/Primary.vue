@@ -1,11 +1,12 @@
-<script setup>
+<script setup lang="ts">
 const pt = {
   root: {
     class:
-      'w-full font-semibold h-9 rounded-md hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary-ring',
+      'w-full font-semibold h-8 xl:h-9 rounded-md hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary-ring',
   },
   label: {
-    class: 'text-sm text-button-main-label hover:text-button-main-hover-label',
+    class:
+      'text-xs xl:text-sm text-button-main-label hover:text-button-main-hover-label text-nowrap',
   },
 }
 </script>

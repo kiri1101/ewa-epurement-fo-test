@@ -1,6 +1,7 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
+  const config = useRuntimeConfig()
+
   if (import.meta.client) {
-    const config = useRuntimeConfig()
     const assetStore = useAssetStore()
 
     try {
@@ -24,6 +25,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   }
 
   if (to.path === '/') {
-    return navigateTo('/auth/signin')
+    return navigateTo(config.public.page.login)
   }
 })

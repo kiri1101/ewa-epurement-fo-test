@@ -1,21 +1,20 @@
-import type { User } from '~~/shared/utils/model'
-
 export const useAuthStore = defineStore(
-  'auth',
+  'authUser',
   () => {
-    const state = ref<User | null>(null)
+    const state = ref<AuthData | null>(null)
 
-    const isAuth = computed(() => (state.value ? true : false))
+    const getUserSnapShot = (): AuthData | null =>
+      state.value ? state.value : null
 
-    const update = (user: User) => (state.value = user)
+    const store = (user: AuthData) => (state.value = user)
 
-    const reset = () => (state.value = null)
+    const clear = () => (state.value = null)
 
     return {
       state,
-      update,
-      reset,
-      isAuth,
+      getUserSnapShot,
+      store,
+      clear,
     }
   },
   {

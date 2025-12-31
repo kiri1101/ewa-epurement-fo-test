@@ -2,6 +2,10 @@ import process from 'node:process';globalThis._importMeta_={url:import.meta.url,
 import 'node:https';
 import './chunks/_/nitro.mjs';
 export { n as default } from './chunks/routes/api/test.mjs';
+import 'drizzle-orm';
+import 'drizzle-orm/libsql';
+import '@libsql/client';
+import 'drizzle-orm/sqlite-core';
 import 'node:events';
 import 'node:buffer';
 import 'vue-router';

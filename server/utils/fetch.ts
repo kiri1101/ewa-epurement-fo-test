@@ -2,8 +2,8 @@ import type { H3Event } from 'h3'
 
 export const fetch = (event: H3Event) => {
   const config = useRuntimeConfig(event)
-  const tokenCookie = authTokens(event)
-  const tokens = tokenCookie.getTokenSnapShot()
+  const auth = authCookie(event)
+  const authUser = auth.getUserSnapShot()
 
   return $fetch.create({
     baseURL: config.private.baseURL as string,
@@ -13,8 +13,11 @@ export const fetch = (event: H3Event) => {
       'Content-Type': 'application/json',
     },
     onRequest({ options }) {
-      if (tokens) {
-        options.headers.append('Authorization', `Bearer ${tokens.token}`)
+      if (authUser) {
+        options.headers.append(
+          'Authorization',
+          `Bearer ${authUser.token.bearer}`
+        )
       }
     },
     onResponseError: async ({ response }) => {},

@@ -1,5 +1,9 @@
-import { d as defineEventHandler, u as useRuntimeConfig, a as authOtp, r as readBody, l as loadLocale, c as readValidatedBody, e as errorMap } from '../../../_/nitro.mjs';
+import { d as defineEventHandler, u as useRuntimeConfig, r as readBody, l as loadLocale, a as readValidatedBody, h as getOtp, e as errorMap } from '../../../_/nitro.mjs';
 import * as z from 'zod';
+import 'drizzle-orm';
+import 'drizzle-orm/libsql';
+import '@libsql/client';
+import 'drizzle-orm/sqlite-core';
 import 'node:http';
 import 'node:https';
 import 'node:events';
@@ -109,8 +113,6 @@ import 'node:crypto';
 
 const validateOtp = defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
-  const otpCookie = authOtp(event);
-  const otpSent = otpCookie.getOtpSnapShot();
   const reqBody = await readBody(event);
   const lang = reqBody.lang === "fr" ? "fr" : "en";
   const t = await loadLocale(lang);
@@ -128,7 +130,7 @@ const validateOtp = defineEventHandler(async (event) => {
     event,
     (body) => OtpSchema.safeParse(body)
   );
-  const response = payload.success ? Number(payload.data.otp) === Number(otpSent) : null;
+  const response = payload.success ? await getOtp(event, payload.data.otp) : null;
   return {
     validError: payload.error ? errorMap(payload.error.issues) : null,
     apiResponse: response

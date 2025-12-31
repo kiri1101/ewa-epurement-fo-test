@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: ['authenticated'],
+})
+
 const config = useRuntimeConfig()
 const { $apiFetch } = useNuxtApp() as any
 const { t } = useI18n()
@@ -37,7 +41,7 @@ const next = async () => {
     let output
     try {
       const { apiResponse, validError } = await $apiFetch(
-        '/api/auth/validateOtp',
+        config.public.api.validateOtp,
         {
           method: 'POST',
           body: {
@@ -50,13 +54,17 @@ const next = async () => {
       if (validError) {
         output = validError.forEach((err: ZodValidationError) => e(err.message))
       } else {
-        output = !apiResponse
-          ? e(t('validation.bad_otp'))
-          : navigateTo('/auth/update-password')
+        output = apiResponse
+          ? navigateTo(config.public.page.updatePwd)
+          : e(t('validation.bad_otp'))
       }
 
       return output
-    } catch (error) {
+    } catch (error: any) {
+      const errorMsg = handleApiError(error)
+      if (errorMsg.length > 0) {
+        e(errorMsg)
+      }
     } finally {
       hideLoader()
     }

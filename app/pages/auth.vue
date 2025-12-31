@@ -1,5 +1,4 @@
-<script setup>
-const config = useRuntimeConfig()
+<script setup lang="ts">
 const assetStore = useAssetStore()
 const showLoader = ref({
   logo: true,
@@ -50,7 +49,7 @@ onMounted(() => {
         class="grid md:grid-cols-[auto_1fr] gap-5 w-full max-w-lg md:max-w-2xl lg:max-w-4xl p-3 mx-auto border-[1.5px] rounded-lg shadow-lg border-auth-form-border backdrop-blur-md"
       >
         <div class="hidden md:block">
-          <div v-if="showLoader.hero" class="w-64 h-96 lg:w-96 lg:h-96">
+          <div v-if="showLoader.hero" class="w-64 h-96 lg:w-96">
             <skeleton width="100%" height="100%" />
           </div>
 
@@ -64,6 +63,31 @@ onMounted(() => {
 
         <div class="py-5 text-auth-text-primary">
           <NuxtPage :page-key="route => route.fullPath" />
+        </div>
+      </div>
+
+      <div
+        class="grid md:grid-cols-[auto_1fr] gap-5 w-full max-w-lg md:max-w-2xl lg:max-w-4xl p-3 mx-auto"
+      >
+        <div class="w-64 lg:w-96 hidden md:block" />
+
+        <div class="flex justify-center">
+          <div
+            class="flex items-center space-x-2 font-semibold text-auth-text-primary"
+          >
+            <div>
+              <skeleton v-if="showLoader.logo" width="2rem" height="2rem" />
+
+              <img
+                v-else
+                :src="assetStore.list.security"
+                class="object-contain object-center rounded-lg size-8"
+                alt="Security Logo"
+              />
+            </div>
+
+            <h5 class="text-sm">{{ $t('page.login.security') }}</h5>
+          </div>
         </div>
       </div>
     </div>

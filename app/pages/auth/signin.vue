@@ -1,7 +1,12 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: ['guest'],
+})
+
 const config = useRuntimeConfig()
-const { $apiFetch, $loginUser } = useNuxtApp() as any
+const { $apiFetch } = useNuxtApp() as any
 const { t, locale } = useI18n()
+const authStore = useAuthStore()
 const showPass = ref(false)
 const isLoading = ref(false)
 const { e } = useNotify()
@@ -33,15 +38,15 @@ const hideLoader = () => (isLoading.value = false)
 const submit = async () => {
   showLoader()
   try {
-    const { apiResponse, errResponse, validError } = await $apiFetch(
-      '/api/auth/login',
+    const { apiResponse, validError } = await $apiFetch(
+      config.public.api.login,
       {
         method: 'POST',
         body: form.value,
       }
     )
 
-    if (validError !== null) {
+    if (validError) {
       validError.forEach((err: any) => {
         validErrorMsg.value[err?.name as keyof typeof validErrorMsg.value] =
           err?.message
@@ -54,22 +59,19 @@ const submit = async () => {
     }
 
     if (apiResponse) {
-      let output
-      if (String(apiResponse.pesake.code).trim().length > 0) {
-        output = e(apiResponse.pesake.detail)
-      } else {
-        // save corresponding auth response data
-        $loginUser(apiResponse.data)
-        // determine redirect route
-        const redirect = Boolean(apiResponse.data.is_first_login)
-          ? '/auth/forgot-password'
-          : '/dashboard'
-        // init redirect
-        output = navigateTo(redirect)
-      }
-      return output
+      authStore.store(apiResponse)
+
+      const redirect = apiResponse.firstAttempt
+        ? config.public.page.forgotPwd
+        : config.public.page.clientBoard
+
+      navigateTo(redirect)
     }
   } catch (error: any) {
+    const errorMsg = handleApiError(error)
+    if (errorMsg.length > 0) {
+      e(errorMsg)
+    }
   } finally {
     hideLoader()
   }
@@ -100,7 +102,7 @@ const submit = async () => {
 
         <span
           v-if="validErrorMsg.username.trim().length > 0"
-          class="text-xs text-validation-error font-semibold transition duration-200 ease-linear"
+          class="text-xs font-semibold transition duration-200 ease-linear text-validation-error"
         >
           {{ validErrorMsg.username }}
         </span>
@@ -132,7 +134,7 @@ const submit = async () => {
 
         <span
           v-if="validErrorMsg.secret.trim().length > 0"
-          class="text-xs text-validation-error font-semibold transition duration-200 ease-linear"
+          class="text-xs font-semibold transition duration-200 ease-linear text-validation-error"
         >
           {{ validErrorMsg.secret }}
         </span>
@@ -144,13 +146,13 @@ const submit = async () => {
         :loading="isLoading"
       />
 
-      <p
+      <!-- <p
         class="text-sm text-center underline decoration-link-decoration hover:decoration-link-hover-decoration decoration-1 underline-offset-4 text-link hover:text-link-hover"
       >
-        <nuxt-link to="/auth/forgot-password">
+        <nuxt-link to="/">
           {{ $t('page.login.forgot_password') }}
         </nuxt-link>
-      </p>
+      </p> -->
     </form>
   </div>
 </template>

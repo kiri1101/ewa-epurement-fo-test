@@ -1,6 +1,10 @@
 import { mergeProps, createBlock, renderSlot, openBlock, Transition, withCtx, withDirectives, createCommentVNode, resolveDynamicComponent, createElementVNode, vShow, normalizeClass } from 'vue';
 import { B as BaseStyle, l as script$9 } from './server.mjs';
 import '../_/nitro.mjs';
+import 'drizzle-orm';
+import 'drizzle-orm/libsql';
+import '@libsql/client';
+import 'drizzle-orm/sqlite-core';
 import 'node:http';
 import 'node:https';
 import 'node:events';

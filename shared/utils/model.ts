@@ -1,4 +1,4 @@
-type Role = {
+export type Role = {
   roleDesc: string
   roleName: string
   roleSlug: string
@@ -25,7 +25,6 @@ export interface User {
   roles: string[]
   status: number
   userPseudo: string
-  is_first_login: number
 }
 
 export type AuthToken = {
@@ -56,18 +55,46 @@ export interface AuthResponse {
   token: string
   refreshToken: string
   expired_at: number
-  bankAccounts: BankAcc[]
+  bankAccounts: BankAcc[] | null
   roles: Role[]
   is_first_login: number
-  otp?: number | null
+  otp: number | null
 }
 
 export interface ApiResponse {
   pesake: {
     code: string
     level: string
-    detail: string
+    details: {
+      pesakeDetail: string
+      devDetail: string
+    }
     detail_error: string
   }
   data: AuthResponse
+}
+
+export type AuthData = {
+  id: string
+  firstName: string
+  lastName: string
+  firstAttempt: boolean
+  emailAddress: string
+  phoneNumber: string
+  kycStatus: boolean
+  token: {
+    bearer: string
+    refresh: string
+  }
+}
+
+export type ZodErrorMap = {
+  message: string
+  name: string
+}
+
+export type UserAccount = {
+  id: string
+  name: string
+  value: string
 }

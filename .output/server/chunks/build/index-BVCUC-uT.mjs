@@ -10,6 +10,10 @@ import { resolveComponent, resolveDirective, createBlock, openBlock, withCtx, cr
 import '@primeuix/utils/object';
 import '@primeuix/utils/eventbus';
 import '../_/nitro.mjs';
+import 'drizzle-orm';
+import 'drizzle-orm/libsql';
+import '@libsql/client';
+import 'drizzle-orm/sqlite-core';
 import 'node:http';
 import 'node:https';
 import 'node:events';

@@ -4,8 +4,6 @@ import { loadLocale } from '~~/server/utils/locale'
 
 export default defineEventHandler(async (event: H3Event) => {
   const config = useRuntimeConfig(event)
-  const otpCookie = authOtp(event)
-  const otpSent = otpCookie.getOtpSnapShot()
 
   const reqBody = await readBody(event)
   const lang = (reqBody.lang === 'fr' ? 'fr' : 'en') as 'en' | 'fr'
@@ -29,7 +27,7 @@ export default defineEventHandler(async (event: H3Event) => {
   )
 
   const response = payload.success
-    ? Number(payload.data.otp) === Number(otpSent)
+    ? await getOtp(event, payload.data.otp)
     : null
 
   return {

@@ -3,6 +3,10 @@ import { j as script$4, R as Ripple, B as BaseStyle, l as script$9 } from './ser
 import { style } from '@primeuix/styles/message';
 import { resolveComponent, resolveDirective, createBlock, openBlock, Transition, mergeProps, withCtx, createElementBlock, createCommentVNode, createElementVNode, renderSlot, withDirectives, normalizeClass, resolveDynamicComponent } from 'vue';
 import '../_/nitro.mjs';
+import 'drizzle-orm';
+import 'drizzle-orm/libsql';
+import '@libsql/client';
+import 'drizzle-orm/sqlite-core';
 import 'node:http';
 import 'node:https';
 import 'node:events';

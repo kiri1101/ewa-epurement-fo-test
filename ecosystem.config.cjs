@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'ewa-nuxt-fo',
+      name: 'ewa-epurement-fo',
       port: '4001',
       exec_mode: 'cluster',
       instances: 'max',

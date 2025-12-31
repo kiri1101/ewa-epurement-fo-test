@@ -52,9 +52,11 @@ export default defineNuxtConfig({
       cookies: {
         httpOnly: true,
       },
-      auth: {
-        login: process.env.AUTH_LOGIN,
-        resetPwd: process.env.AUTH_RESET_PASSWORD,
+      api: {
+        auth: {
+          login: process.env.EXT_AUTH_LOGIN,
+          resetPwd: process.env.EXT_AUTH_RESET_PASSWORD,
+        },
       },
       validation: {
         zod: {
@@ -82,6 +84,18 @@ export default defineNuxtConfig({
           secret: process.env.ASSET_SECRET,
         },
         toastLife: process.env.TOAST_LIFECYCLE,
+      },
+      page: {
+        login: process.env.PAGE_LOGIN,
+        forgotPwd: process.env.PAGE_FORGOT_PWD,
+        updatePwd: process.env.PAGE_UPDATE_PWD,
+        clientBoard: process.env.PAGE_CLIENT_DASHBOARD,
+      },
+      api: {
+        login: process.env.API_LOGIN,
+        logout: process.env.API_LOGOUT,
+        validateOtp: process.env.API_VALIDATE_OTP,
+        updatePwd: process.env.API_UPDATE_PWD,
       },
     },
   },

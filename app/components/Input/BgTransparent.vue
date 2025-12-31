@@ -1,6 +1,4 @@
 <script setup lang="ts">
-const { t } = useI18n()
-
 const { type = 'text', placeholder = '' } = defineProps<{
   identifier: string
   type?: string
@@ -27,7 +25,7 @@ const pt = {
   />
 </template>
 
-<style>
+<style scoped>
 .p-inputtext.p-variant-filled {
   background-color: var(--color-input) !important;
   border-color: var(--color-input-border) !important;
@@ -39,5 +37,10 @@ const pt = {
     box-shadow: 0 0 0 0.2rem var(--color-input-focus-ring) !important;
     color: var(--color-input-focus-text) !important;
   }
+}
+
+.p-inputtext:disabled {
+  background: var(--color-input-disabled) !important;
+  color: var(--color-input-disabled-text) !important;
 }
 </style>

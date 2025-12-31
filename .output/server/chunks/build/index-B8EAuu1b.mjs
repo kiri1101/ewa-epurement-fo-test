@@ -2,6 +2,10 @@ import { omit, resolve, isArray, mergeKeys, isEmpty, isNotEmpty } from '@primeui
 import { ref, reactive, computed, getCurrentInstance, nextTick, mergeProps, toValue, watch, createElementBlock, openBlock, withModifiers, renderSlot } from 'vue';
 import { B as BaseStyle, l as script$9 } from './server.mjs';
 import '../_/nitro.mjs';
+import 'drizzle-orm';
+import 'drizzle-orm/libsql';
+import '@libsql/client';
+import 'drizzle-orm/sqlite-core';
 import 'node:http';
 import 'node:https';
 import 'node:events';

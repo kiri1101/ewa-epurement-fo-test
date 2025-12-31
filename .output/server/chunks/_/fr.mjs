@@ -3,7 +3,14 @@ var meta = {
 		login: "Se connecter",
 		forgot_password: "Mot de passe oublier",
 		update_password: "Mettre à jour le mot de passe",
-		dashboard: "Tableau de bord"
+		dashboard: "Tableau de bord",
+		account: "Mes comptes",
+		beneficiary: "Mes bénéficiaires",
+		transfer: "Mes transferts",
+		profile: {
+			infos: "Mes informations",
+			users: "Mes utilisateurs"
+		}
 	}
 };
 var page = {
@@ -14,7 +21,8 @@ var page = {
 			part2: "demande de transfer en ligne",
 			part3: "dès maintenant!"
 		},
-		forgot_password: "Have you forgotten your password?"
+		forgot_password: "Have you forgotten your password?",
+		security: "Plateform sécurisé"
 	},
 	forgot_password: {
 		form_title: "Vérification 2Fa",
@@ -33,7 +41,8 @@ var page = {
 var button = {
 	login: "Connexion",
 	verify_code: "Vérifier le code",
-	update_password: "Mettre à jour le mot de passe"
+	update_password: "Mettre à jour le mot de passe",
+	logout: "Déconnexion"
 };
 var placeholder = {
 	pseudo: "Pseudo ou email",
@@ -50,7 +59,15 @@ var validation = {
 	number: "Ce champ doit contenir des chiffres.",
 	payment_method: "Mode de paiement invalide",
 	bad_otp: "OTP incorrecte",
-	pwd_confirm_failed: "Les mots de passe ne correspondent pas."
+	pwd_confirm_failed: "Les mots de passe ne correspondent pas.",
+	server_api_failed: "Service indisponible ! Veuillez réessayer plus tard."
+};
+var menu = {
+	dashboard: "Tableau de bord",
+	account: "Mes comptes",
+	beneficiary: "Mes bénéficiaires",
+	transfer: "Mes transferts",
+	profile: "Mon profil"
 };
 const fr = {
 	meta: meta,
@@ -58,8 +75,9 @@ const fr = {
 	button: button,
 	placeholder: placeholder,
 	success: success,
-	validation: validation
+	validation: validation,
+	menu: menu
 };
 
-export { button, fr as default, meta, page, placeholder, success, validation };
+export { button, fr as default, menu, meta, page, placeholder, success, validation };
 //# sourceMappingURL=fr.mjs.map
