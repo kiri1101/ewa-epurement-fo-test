@@ -165,7 +165,7 @@ const login_post = defineEventHandler(
           statusText: response == null ? void 0 : response.pesake.details.pesakeDetail
         });
       } else {
-        output = await saveUser(event, response == null ? void 0 : response.data);
+        output = await saveUser(response == null ? void 0 : response.data);
       }
     }
     return {

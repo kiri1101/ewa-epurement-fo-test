@@ -73,7 +73,7 @@ export default defineEventHandler(
           statusText: response?.pesake.details.pesakeDetail,
         })
       } else {
-        output = await saveUser(event, response?.data)
+        output = await saveUser(response?.data)
       }
     }
 
