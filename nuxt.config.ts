@@ -49,6 +49,7 @@ export default defineNuxtConfig({
     private: {
       baseURL: process.env.API_BASE_URL,
       origin: process.env.ORIGIN,
+      dbPath: process.env.DB_PATH,
       cookies: {
         httpOnly: true,
       },

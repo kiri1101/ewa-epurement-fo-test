@@ -73,6 +73,8 @@ const saveUser = async (
       },
     }
   } catch (error) {
+    console.log('save user db error: ', error)
+
     throw createError({
       status: 500,
       statusText: 'Failed to create user record',
@@ -94,7 +96,7 @@ const createRole = async (roleData: Role[], user: UserResponse) => {
 
     await db.insert(roles).values(roleMap)
   } catch (error) {
-    console.log(error)
+    console.log('create role db error: ', error)
     throw createError({
       status: 500,
       statusText: 'Failed to create user role',
