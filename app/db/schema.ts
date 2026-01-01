@@ -1,4 +1,9 @@
-import { sql, type InferInsertModel, type InferSelectModel } from 'drizzle-orm'
+import {
+  relations,
+  sql,
+  type InferInsertModel,
+  type InferSelectModel,
+} from 'drizzle-orm'
 import { int, numeric, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 export const users = sqliteTable('users', {
@@ -22,6 +27,30 @@ export const users = sqliteTable('users', {
   updatedAt: text('updated_at'),
 })
 
+export const usersRelations = relations(users, ({ many }) => ({
+  sessions: many(sessions),
+  accounts: many(bankAcc),
+  roles: many(roles),
+}))
+
+export const sessions = sqliteTable('sessions', {
+  id: int().primaryKey({ autoIncrement: true }),
+  uuid: text().notNull().unique(),
+  userId: int('user_id')
+    .references(() => users.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    })
+    .notNull(),
+  createdAt: text('created_at').notNull(),
+  updatedAt: text('updated_at'),
+  expireAt: text('expire_at').notNull(),
+})
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, { fields: [sessions.userId], references: [users.id] }),
+}))
+
 export const bankAcc = sqliteTable('bank_accounts', {
   id: int().primaryKey({ autoIncrement: true }),
   uuid: text().notNull().unique(),
@@ -40,6 +69,10 @@ export const bankAcc = sqliteTable('bank_accounts', {
   clientType: text('client_type').notNull(),
 })
 
+export const bankAccRelations = relations(bankAcc, ({ one }) => ({
+  user: one(users, { fields: [bankAcc.userId], references: [users.id] }),
+}))
+
 export const roles = sqliteTable('roles', {
   id: int().primaryKey({ autoIncrement: true }),
   uuid: text().notNull().unique(),
@@ -53,6 +86,10 @@ export const roles = sqliteTable('roles', {
   name: text().notNull(),
 })
 
+export const rolesRelations = relations(roles, ({ one }) => ({
+  user: one(users, { fields: [roles.userId], references: [users.id] }),
+}))
+
 export type User = InferSelectModel<typeof users>
 
 export type InsertUser = InferInsertModel<typeof users>
@@ -64,3 +101,7 @@ export type InsertBankAcc = InferInsertModel<typeof bankAcc>
 export type Role = InferSelectModel<typeof roles>
 
 export type InsertRole = InferInsertModel<typeof roles>
+
+export type UserSession = InferSelectModel<typeof sessions>
+
+export type InsertUserSession = InferInsertModel<typeof sessions>

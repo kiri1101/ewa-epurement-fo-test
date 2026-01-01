@@ -5,7 +5,7 @@ export default defineEventHandler(async (event: H3Event) => {
   const authUser = auth.getUserSnapShot()
 
   if (authUser) {
-    await deleteUser(authUser.id)
+    await deleteUser(authUser.sessionId)
     auth.clear()
   }
 

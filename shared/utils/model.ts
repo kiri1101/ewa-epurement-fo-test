@@ -86,6 +86,7 @@ export type AuthData = {
     bearer: string
     refresh: string
   }
+  sessionId: string
 }
 
 export type ZodErrorMap = {

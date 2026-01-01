@@ -1,7 +1,16 @@
-import { users, roles, bankAcc, InsertRole, InsertBankAcc } from '~/db/schema'
+import {
+  users,
+  sessions,
+  roles,
+  bankAcc,
+  InsertRole,
+  InsertBankAcc,
+  InsertUserSession,
+} from '~/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { Role, BankAcc, AuthData } from '~~/shared/utils/model'
 import type { H3Event } from 'h3'
+import moment from 'moment'
 
 type UserResponse = {
   insertId: string
@@ -42,35 +51,88 @@ const saveUser = async (data: AuthResponse): Promise<AuthData> => {
     refreshToken: data.refreshToken,
     tokenLife: String(data.expired_at),
   }
+  let sessionId, output
 
   return await db.transaction(async tx => {
     try {
-      const user: UserResponse[] = await tx
-        .insert(users)
-        .values(userData)
-        .returning({ insertId: users.uuid, id: users.id })
-
-      // save user roles
-      await createRole(tx, data.roles, user[0])
-
-      // save user bank accounts
-      if (data.bankAccounts) {
-        await createBankAcc(tx, data.bankAccounts, user[0])
-      }
-
-      return {
-        id: user[0].insertId,
-        firstName: data.user.firstName,
-        lastName: data.user.lastName,
-        firstAttempt: Boolean(data.is_first_login),
-        emailAddress: data.user.email,
-        phoneNumber: `(${data.user.phoneCode}) ${data.user.phoneNumber}`,
-        kycStatus: Boolean(data.user.kycStatus),
-        token: {
-          bearer: data.token,
-          refresh: data.refreshToken,
+      const authUser = await tx.query.users.findFirst({
+        columns: {
+          uuid: true,
+          id: true,
         },
+        where: and(
+          eq(users.email, data.user.email),
+          eq(users.phoneNumber, data.user.phoneNumber)
+        ),
+      })
+
+      // define session lifecycle
+      const uuid = crypto.randomUUID()
+      const now = moment().format('YYYY-MM-DDTHH:mm:ss')
+      const expires = moment().add(1, 'hour').format('YYYY-MM-DDTHH:mm:ss')
+
+      // if yes add new session
+      if (authUser) {
+        sessionId = await createSession(tx, {
+          uuid: uuid,
+          userId: authUser.id,
+          createdAt: now,
+          expireAt: expires,
+        })
+
+        output = {
+          id: authUser.uuid,
+          firstName: data.user.firstName,
+          lastName: data.user.lastName,
+          firstAttempt: Boolean(data.is_first_login),
+          emailAddress: data.user.email,
+          phoneNumber: `(${data.user.phoneCode}) ${data.user.phoneNumber}`,
+          kycStatus: Boolean(data.user.kycStatus),
+          token: {
+            bearer: data.token,
+            refresh: data.refreshToken,
+          },
+          sessionId: sessionId,
+        }
+      } else {
+        const user: UserResponse[] = await tx
+          .insert(users)
+          .values(userData)
+          .returning({ insertId: users.uuid, id: users.id })
+
+        // create new session
+        sessionId = await createSession(tx, {
+          uuid: uuid,
+          userId: user[0].id,
+          createdAt: now,
+          expireAt: expires,
+        })
+
+        // save user roles
+        await createRole(tx, data.roles, user[0])
+
+        // save user bank accounts
+        if (data.bankAccounts) {
+          await createBankAcc(tx, data.bankAccounts, user[0])
+        }
+
+        output = {
+          id: user[0].insertId,
+          firstName: data.user.firstName,
+          lastName: data.user.lastName,
+          firstAttempt: Boolean(data.is_first_login),
+          emailAddress: data.user.email,
+          phoneNumber: `(${data.user.phoneCode}) ${data.user.phoneNumber}`,
+          kycStatus: Boolean(data.user.kycStatus),
+          token: {
+            bearer: data.token,
+            refresh: data.refreshToken,
+          },
+          sessionId: sessionId,
+        }
       }
+
+      return output
     } catch (error) {
       console.error('save user auth error: ', error)
       console.log('save user auth log error: ', error)
@@ -81,6 +143,18 @@ const saveUser = async (data: AuthResponse): Promise<AuthData> => {
       })
     }
   })
+}
+
+const createSession = async (
+  tx: any,
+  sessionData: InsertUserSession
+): Promise<string> => {
+  const newSession = await tx
+    .insert(sessions)
+    .values(sessionData)
+    .returning({ insertId: sessions.uuid })
+
+  return newSession[0].insertId
 }
 
 const createRole = async (tx: any, roleData: Role[], user: UserResponse) => {
@@ -120,20 +194,45 @@ const createBankAcc = async (
   await tx.insert(bankAcc).values(bankAccMap)
 }
 
-const deleteUser = async (userId: string) => {
-  let output
+const deleteUser = async (sessionId: string) => {
   try {
-    const user: { deletedId: string }[] = await db
-      .delete(users)
-      .where(eq(users.uuid, userId))
-      .returning({ deletedId: users.uuid })
+    // get all active sessions for auth user
+    const currentSessionWithUser = await db.query.sessions.findFirst({
+      columns: {
+        uuid: true,
+      },
+      where: eq(sessions.uuid, sessionId),
+      with: {
+        user: {
+          columns: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+          with: {
+            sessions: {
+              columns: {
+                uuid: true,
+                userId: true,
+                createdAt: true,
+                expireAt: true,
+              },
+            },
+          },
+        },
+      },
+    })
 
-    output = user[0].deletedId
-  } catch (error) {
-    console.log('save user error: ', error)
-    output = null
-  }
-  return output
+    if (currentSessionWithUser) {
+      if (currentSessionWithUser?.user.sessions.length > 1) {
+        await db.delete(sessions).where(eq(sessions.uuid, sessionId))
+      } else {
+        await db
+          .delete(users)
+          .where(eq(users.id, currentSessionWithUser.user.id))
+      }
+    }
+  } catch (error) {}
 }
 
 export { saveUser, deleteUser, getOtp }
