@@ -81,12 +81,12 @@ const submit = async () => {
 <template>
   <div class="mx-auto w-92">
     <h2
-      class="pb-4 text-3xl font-bold text-center underline decoration-auth-form-title-decoration decoration-2 underline-offset-10 text-auth-text-primary"
+      class="pb-4 text-2xl lg:text-3xl font-bold text-center underline decoration-auth-form-title-decoration decoration-2 underline-offset-10 text-auth-text-primary"
     >
       {{ $t('page.login.form_title') }}
     </h2>
 
-    <p>
+    <p class="text-sm lg:text-base">
       {{ $t('page.login.intro_msg.part1') }}
       <span class="font-semibold">{{ $t('page.login.intro_msg.part2') }}</span>
       {{ $t('page.login.intro_msg.part3') }}

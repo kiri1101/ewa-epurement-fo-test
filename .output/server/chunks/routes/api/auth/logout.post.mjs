@@ -1,8 +1,9 @@
 import { d as defineEventHandler, b as authCookie, g as deleteUser } from '../../../_/nitro.mjs';
 import 'drizzle-orm';
+import 'drizzle-orm/sqlite-core';
 import 'drizzle-orm/libsql';
 import '@libsql/client';
-import 'drizzle-orm/sqlite-core';
+import 'moment';
 import 'node:http';
 import 'node:https';
 import 'node:events';
@@ -114,7 +115,7 @@ const logout_post = defineEventHandler(async (event) => {
   const auth = authCookie(event);
   const authUser = auth.getUserSnapShot();
   if (authUser) {
-    await deleteUser(authUser.id);
+    await deleteUser(authUser.sessionId);
     auth.clear();
   }
   return {

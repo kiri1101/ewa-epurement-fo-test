@@ -57,6 +57,9 @@ export default defineNuxtConfig({
         auth: {
           login: process.env.EXT_AUTH_LOGIN,
           resetPwd: process.env.EXT_AUTH_RESET_PASSWORD,
+          clientUser: {
+            create: process.env.EXT_CREATE_CLIENT_USER,
+          },
         },
       },
       validation: {
@@ -97,6 +100,7 @@ export default defineNuxtConfig({
         logout: process.env.API_LOGOUT,
         validateOtp: process.env.API_VALIDATE_OTP,
         updatePwd: process.env.API_UPDATE_PWD,
+        createManage: process.env.API_CREATE_CLIENT_USER,
       },
     },
   },

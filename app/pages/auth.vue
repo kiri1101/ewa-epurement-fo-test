@@ -1,13 +1,9 @@
 <script setup lang="ts">
 const assetStore = useAssetStore()
-const showLoader = ref({
-  logo: true,
-  hero: true,
-})
+const showLoader = ref(true)
 
 onMounted(() => {
-  showLoader.value.logo = assetStore.hasAssets ? false : true
-  showLoader.value.hero = assetStore.hasAssets ? false : true
+  showLoader.value = assetStore.hasAssets ? false : true
 })
 </script>
 
@@ -18,18 +14,20 @@ onMounted(() => {
     >
       <div class="flex justify-center">
         <div
-          class="z-10 flex items-center justify-center translate-y-10 border-b-4 border-x-4 border-auth-navbar-border w-28 h-9 bg-auth-navbar"
+          class="z-10 flex items-center justify-center translate-y-[1.99rem] lg:translate-y-[2.49rem] border-b-4 border-x-4 border-auth-navbar-border w-20 lg:w-28 h-7 lg:h-9 bg-auth-navbar"
         >
-          <div class="-translate-y-4">
-            <skeleton v-if="showLoader.logo" width="5rem" height="3rem" />
+          <nuxt-link to="/" class="-translate-y-4">
+            <div v-if="showLoader" class="w-14 h-8 lg:w-20 lg:h-12">
+              <skeleton width="100%" height="100%" />
+            </div>
 
             <img
               v-else
               :src="assetStore.list.logo"
-              class="object-cover object-center w-20"
+              class="object-cover object-center w-14 lg:w-20"
               alt="App Logo"
             />
-          </div>
+          </nuxt-link>
         </div>
       </div>
 
@@ -46,17 +44,17 @@ onMounted(() => {
       />
 
       <div
-        class="grid md:grid-cols-[auto_1fr] gap-5 w-full max-w-lg md:max-w-2xl lg:max-w-4xl p-3 mx-auto border-[1.5px] rounded-lg shadow-lg border-auth-form-border backdrop-blur-md"
+        class="grid md:grid-cols-[auto_1fr] gap-5 w-auto max-w-lg md:max-w-4xl p-3 mx-4 sm:mx-auto border-[1.5px] rounded-lg shadow-lg border-auth-form-border backdrop-blur-md"
       >
         <div class="hidden md:block">
-          <div v-if="showLoader.hero" class="w-64 h-96 lg:w-96">
+          <div v-if="showLoader" class="size-64 md:size-80">
             <skeleton width="100%" height="100%" />
           </div>
 
           <img
             v-else
             :src="assetStore.list.login_hero"
-            class="object-cover object-center rounded-lg size-96"
+            class="object-cover object-center rounded-lg size-64 md:size-80"
             alt="Login Hero"
           />
         </div>
@@ -76,7 +74,7 @@ onMounted(() => {
             class="flex items-center space-x-2 font-semibold text-auth-text-primary"
           >
             <div>
-              <skeleton v-if="showLoader.logo" width="2rem" height="2rem" />
+              <skeleton v-if="showLoader" width="2rem" height="2rem" />
 
               <img
                 v-else

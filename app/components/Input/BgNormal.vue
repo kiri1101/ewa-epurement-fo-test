@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { type = 'email', placeholder = '' } = defineProps<{
+const { type = 'text', placeholder = '' } = defineProps<{
   identifier: string
   placeholder?: string
   type?: string

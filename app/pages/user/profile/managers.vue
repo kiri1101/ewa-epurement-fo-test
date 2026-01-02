@@ -1,17 +1,31 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const assetStore = useAssetStore()
 const auth = useAuthStore()
 const { $apiFetch } = useNuxtApp() as any
+const isLoading = ref(false)
 const showLoader = ref(true)
 const showModal = ref(false)
+const { e } = useNotify()
+const validErrorMsg = ref({
+  pseudo: '',
+  firstName: '',
+  lastName: '',
+  mailingAddress: '',
+  phone: '',
+  countryCode: '',
+  accounts: '',
+})
 const accountList = ref<UserAccount[] | any[]>([])
 const form = ref<{
   pseudo: string
-  name: string
+  firstName: string
+  lastName: string
   mailingAddress: string
   phone: string
+  countryCode: string
+  lang: string
   accounts: {
     [key: string]: {
       id: string
@@ -21,9 +35,12 @@ const form = ref<{
   }
 }>({
   pseudo: '',
-  name: '',
+  firstName: '',
+  lastName: '',
   mailingAddress: '',
   phone: '',
+  countryCode: '',
+  lang: locale.value,
   accounts: {},
 })
 
@@ -46,6 +63,11 @@ const openModal = () => {
 }
 
 const closingModal = () => (form.value.accounts = {})
+
+const updateFormPhone = (event: TelInputValidate) => {
+  form.value.phone = event.valid ? event.nationalNumber : ''
+  form.value.countryCode = event.valid ? event.countryCallingCode : ''
+}
 
 const updateRole = (role: string, id: string) => {
   if (form.value.accounts[id]) {
@@ -75,6 +97,55 @@ const getAccountList = async () => {
 
   if (apiResponse) {
     accountList.value = apiResponse
+  }
+}
+
+const showSubmitLoader = () => (isLoading.value = true)
+
+const hideSubmitLoader = () => (isLoading.value = false)
+
+const resetValidMsg = () => {
+  validErrorMsg.value = {
+    pseudo: '',
+    firstName: '',
+    lastName: '',
+    mailingAddress: '',
+    phone: '',
+    countryCode: '',
+    accounts: '',
+  }
+}
+
+const submit = async () => {
+  resetValidMsg()
+  showSubmitLoader()
+  try {
+    const { apiResponse, validError } = await $apiFetch(
+      config.public.api.createManage,
+      {
+        method: 'POST',
+        body: form.value,
+      }
+    )
+    console.log('api form data: ', form.value)
+    console.log('api response: ', apiResponse)
+    console.log('validation errors: ', validError)
+
+    if (validError) {
+      validError.forEach((err: any) => {
+        validErrorMsg.value[err?.name as keyof typeof validErrorMsg.value] =
+          err?.message
+      })
+    } else {
+      resetValidMsg()
+    }
+  } catch (error: any) {
+    const errorMsg = handleApiError(error)
+    if (errorMsg.length > 0) {
+      e(errorMsg)
+    }
+  } finally {
+    hideSubmitLoader()
   }
 }
 </script>
@@ -161,11 +232,51 @@ const getAccountList = async () => {
               </div>
             </gadget-banner>
 
-            <form>
+            <form @submit.prevent="submit">
               <div
                 class="grid grid-cols-2 gap-2 p-3 space-y-0.5 h-96 overflow-auto"
               >
-                <div class="col-span-2">
+                <div>
+                  <label
+                    for="firstName"
+                    class="text-xs text-input-profile-label"
+                  >
+                    Nom
+                  </label>
+
+                  <input-bg-normal
+                    v-model="form.firstName"
+                    identifier="firstName"
+                    placeholder="John"
+                  />
+
+                  <input-error-msg
+                    v-if="validErrorMsg.firstName.trim().length > 0"
+                    :label="validErrorMsg.firstName"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    for="lastName"
+                    class="text-xs text-input-profile-label"
+                  >
+                    Prénom
+                  </label>
+
+                  <input-bg-normal
+                    v-model="form.lastName"
+                    identifier="lastName"
+                    placeholder="Doe"
+                  />
+
+                  <input-error-msg
+                    v-if="validErrorMsg.lastName.trim().length > 0"
+                    :label="validErrorMsg.lastName"
+                  />
+                </div>
+
+                <div>
                   <label for="pseudo" class="text-xs text-input-profile-label">
                     Pseudo
                   </label>
@@ -175,17 +286,10 @@ const getAccountList = async () => {
                     identifier="pseudo"
                     placeholder="J.Doe"
                   />
-                </div>
 
-                <div class="col-span-2">
-                  <label for="name" class="text-xs text-input-profile-label">
-                    Nom et prénom
-                  </label>
-
-                  <input-bg-normal
-                    v-model="form.name"
-                    identifier="name"
-                    placeholder="J.Doe"
+                  <input-error-msg
+                    v-if="validErrorMsg.pseudo.trim().length > 0"
+                    :label="validErrorMsg.pseudo"
                   />
                 </div>
 
@@ -217,54 +321,50 @@ const getAccountList = async () => {
                       placeholder="email@gmail.com"
                     />
                   </input-group>
+
+                  <input-error-msg
+                    v-if="validErrorMsg.mailingAddress.trim().length > 0"
+                    :label="validErrorMsg.mailingAddress"
+                  />
                 </div>
 
-                <div>
+                <div class="col-span-2">
                   <label for="email" class="text-xs text-input-profile-label">
                     Téléphone
                   </label>
 
-                  <input-group>
-                    <input-group-addon pt:root="border-dark-brown">
-                      <skeleton
-                        v-if="showLoader"
-                        width="100%"
-                        height="1.125rem"
-                      />
+                  <input-phone @validate="updateFormPhone" />
 
-                      <img
-                        v-else
-                        :src="assetStore.list.phone_svg"
-                        class="object-center object-contain size-4.5"
-                        alt="Email Logo Svg"
-                      />
-                    </input-group-addon>
-
-                    <input-bg-normal
-                      v-model="form.phone"
-                      identifier="phone"
-                      placeholder="+237 6 90 00 00 00 00"
-                    />
-                  </input-group>
+                  <input-error-msg
+                    v-if="validErrorMsg.phone.trim().length > 0"
+                    :label="validErrorMsg.phone"
+                  />
                 </div>
 
-                <div class="col-span-2 my-5 space-y-5">
-                  <ul class="grid items-center grid-cols-2">
-                    <li>
-                      <h3 class="text-sm font-bold">Bank account access</h3>
-                    </li>
-                    <li>
-                      <button-primary
-                        label="Add an account"
-                        icon="pi pi-plus-circle"
-                        @click.prevent="addManager"
-                      />
-                    </li>
-                  </ul>
+                <div class="my-5 space-y-5 col-span-2">
+                  <div>
+                    <ul class="grid items-center grid-cols-2">
+                      <li>
+                        <h3 class="text-sm font-bold">Bank account access</h3>
+                      </li>
+                      <li>
+                        <button-primary
+                          label="Add an account"
+                          icon="pi pi-plus-circle"
+                          @click.prevent="addManager"
+                        />
+                      </li>
+                    </ul>
+
+                    <input-error-msg
+                      v-if="validErrorMsg.accounts.trim().length > 0"
+                      :label="validErrorMsg.accounts"
+                    />
+                  </div>
 
                   <div v-if="showManagers" class="space-y-2">
                     <pages-manager-role
-                      v-for="acc in Object.values(form.accounts)"
+                      v-for="acc in Object.values(form.accounts).reverse()"
                       :key="acc.id"
                       :data="accountList"
                       @delete="removeManager(acc.id)"
@@ -300,7 +400,11 @@ const getAccountList = async () => {
               <div class="grid justify-end grid-flow-col gap-3 py-2">
                 <button-outline label="Cancel" @click.prevent="closeCallback" />
 
-                <button-primary label="Create a user" />
+                <button-primary
+                  type="submit"
+                  label="Create a user"
+                  :loading="isLoading"
+                />
               </div>
             </form>
           </div>

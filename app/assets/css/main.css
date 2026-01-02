@@ -58,6 +58,8 @@
   /*translate button border color*/
   --color-translate-text: #000;
   /*translate button text color*/
+  --color-translate-text-hover: #fff;
+  /*translate button text color on hover*/ 
 
 
   /*** Input component color code ***/

@@ -60,7 +60,10 @@ var validation = {
 	payment_method: "Invalid payment method",
 	bad_otp: "Invalid OTP code",
 	pwd_confirm_failed: "Passwords do not match",
-	server_api_failed: "Service unavailable! Try again later"
+	server_api_failed: "Service unavailable! Try again later",
+	email: "This field must be a valid email address",
+	client_user_account: "No bank accounts assigned to this user",
+	phone: "Invalid phone number"
 };
 var menu = {
 	dashboard: "Dashboard",

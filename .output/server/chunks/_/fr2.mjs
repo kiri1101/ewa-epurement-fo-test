@@ -60,7 +60,10 @@ var validation = {
 	payment_method: "Mode de paiement invalide",
 	bad_otp: "OTP incorrecte",
 	pwd_confirm_failed: "Les mots de passe ne correspondent pas.",
-	server_api_failed: "Service indisponible ! Veuillez réessayer plus tard."
+	server_api_failed: "Service indisponible ! Veuillez réessayer plus tard.",
+	email: "Ce champ doit contenir une adresse mail valide",
+	client_user_account: "Aucun compte bancaire n'est associé à cet utilisateur.",
+	phone: "Numéro de téléphone invalide"
 };
 var menu = {
 	dashboard: "Tableau de bord",

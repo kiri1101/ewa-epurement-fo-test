@@ -1,0 +1,1 @@
+import{_ as t,c,b as o,o as a,n as _}from"./C8ladftT.js";const r={};function s(l,u){const e=_;return a(),c("div",null,[o(e,{"page-key":n=>n.fullPath},null,8,["page-key"])])}const f=t(r,[["render",s]]);export{f as default};

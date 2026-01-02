@@ -99,3 +99,19 @@ export type UserAccount = {
   name: string
   value: string
 }
+
+export type TelInputValidate = {
+  country: string
+  countryCallingCode: string
+  formatted: string
+  nationalNumber: string
+  valid: boolean
+}
+
+export type ClientUserAccount = {
+  [key: string]: {
+    id: string
+    role: string
+    bank: string
+  }
+}
