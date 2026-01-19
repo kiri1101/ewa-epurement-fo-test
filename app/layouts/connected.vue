@@ -124,33 +124,85 @@ const signOut = async () => {
             </div>
           </nuxt-link>
 
-          <li class="relative text-sidebar-text-primary">
-            <svg-sidebar-item class="translate-x-[0.01rem]" />
+          <nuxt-link
+            to="/beneficiary"
+            :class="[
+              'relative cursor-pointer',
+              {
+                'text-sidebar-text-active': $route.name === 'beneficiary',
+                'text-sidebar-text-primary hover:text-sidebar-text-active hover:bg-app h-10 rounded-l-lg translate-x-[0.01rem] group transition duration-200 ease-linear':
+                  $route.name !== 'beneficiary',
+              },
+            ]"
+          >
+            <svg-sidebar-item
+              :class="[
+                'translate-x-[0.01rem] z-0',
+                {
+                  'fill-app': $route.name === 'beneficiary',
+                },
+              ]"
+            />
 
             <div
-              class="absolute top-0 right-0 left-0 bottom-0 flex flex-row items-center space-x-3 pl-5"
+              :class="[
+                'absolute z-50 flex flex-row items-center space-x-3 pl-5',
+                {
+                  'top-4': $route.name === 'beneficiary',
+                  'top-2.5': $route.name !== 'beneficiary',
+                },
+              ]"
             >
-              <svg-beneficiary />
+              <svg-beneficiary
+                class="group-hover:fill-sidebar-svg-hover"
+                :active="$route.name === 'beneficiary'"
+              />
 
               <h5 class="text-sm font-semibold">
                 {{ $t('menu.beneficiary') }}
               </h5>
             </div>
-          </li>
+          </nuxt-link>
 
-          <li class="relative text-sidebar-text-primary">
-            <svg-sidebar-item class="translate-x-[0.01rem]" />
+          <nuxt-link
+            to="/transfer"
+            :class="[
+              'relative cursor-pointer',
+              {
+                'text-sidebar-text-active': $route.name === 'transfer',
+                'text-sidebar-text-primary hover:text-sidebar-text-active hover:bg-app h-10 rounded-l-lg translate-x-[0.01rem] group transition duration-200 ease-linear':
+                  $route.name !== 'transfer',
+              },
+            ]"
+          >
+            <svg-sidebar-item
+              :class="[
+                'translate-x-[0.01rem] z-0',
+                {
+                  'fill-app': $route.name === 'transfer',
+                },
+              ]"
+            />
 
             <div
-              class="absolute top-0 right-0 left-0 bottom-0 flex flex-row items-center space-x-3 pl-5"
+              :class="[
+                'absolute z-50 flex flex-row items-center space-x-3 pl-5',
+                {
+                  'top-4': $route.name === 'transfer',
+                  'top-2.5': $route.name !== 'transfer',
+                },
+              ]"
             >
-              <svg-transfer />
+              <svg-transfer
+                class="group-hover:fill-sidebar-svg-hover"
+                :active="$route.name === 'transfer'"
+              />
 
               <h5 class="text-sm font-semibold">
                 {{ $t('menu.transfer') }}
               </h5>
             </div>
-          </li>
+          </nuxt-link>
 
           <nuxt-link
             to="/user/profile/infos"

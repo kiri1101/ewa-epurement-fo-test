@@ -37,6 +37,14 @@
     },
     "update_password": {
       "form_title": "Update your password"
+    },
+    "beneficiary": {
+      "title": "Manage who you send money to",
+      "status": {
+        "active": "Active",
+        "block": "Block",
+        "archive": "Archive"
+      }
     }
   },
   "button": {
@@ -51,7 +59,9 @@
     "confirm_new_password": "Confirm new password"
   },
   "success": {
-    "welcome": "Welcome to :bankName"
+    "welcome": "Welcome to :bankName",
+    "collaborator_created": "New collaborator created",
+    "file_uploaded": "File uploaded successfully"
   },
   "validation": {
     "required": "This field is required",
@@ -64,7 +74,10 @@
     "server_api_failed": "Service unavailable! Try again later",
     "email": "This field must be a valid email address",
     "client_user_account": "No bank accounts assigned to this user",
-    "phone": "Invalid phone number"
+    "phone": "Invalid phone number",
+    "invalidType": "Please provide a valid type",
+    "date": "Invalid date",
+    "invalidOtp": "Invalid OTP code"
   },
   "menu": {
     "dashboard": "Dashboard",

@@ -1,47 +1,78 @@
 import { fetch } from '~~/server/utils/fetch'
 import { z, errorMap } from '~~/server/utils/zod'
 import { loadLocale } from '~~/server/utils/locale'
-import type { ApiResponse } from '~~/shared/utils/model'
 import type { H3Event } from 'h3'
+import { users } from '~/db/schema'
+import { eq } from 'drizzle-orm'
+
+type Response = {
+  pesake: Pesake
+  data: {
+    res: CollaboratorList[]
+  }
+}
 
 export default defineEventHandler(async (event: H3Event) => {
   const config = useRuntimeConfig(event)
   const reqBody = await readBody(event)
   const lang = (reqBody.lang === 'fr' ? 'fr' : 'en') as 'en' | 'fr'
   const t = await loadLocale(lang)
-  let output = null
+  let output:
+    | {
+        firstName: string
+        lastName: string
+        roles: string[]
+        createdAt: string
+        isActive: boolean
+      }[]
+    | null = null
 
   const loginSchema = z.object({
     pseudo: z
       .string({
         error: () => ({ message: t.required }),
       })
-      .min(Number(config.private.validation.zod.min), {
-        message: String(t.min).replaceAll(
-          ':value',
-          String(config.private.validation.zod.min)
-        ),
-      }),
+      .refine(
+        val => val.trim().length > Number(config.private.validation.zod.min),
+        {
+          error: () => ({
+            message: String(t.min).replaceAll(
+              ':value',
+              String(config.private.validation.zod.min)
+            ),
+          }),
+        }
+      ),
     firstName: z
       .string({
         error: () => ({ message: t.required }),
       })
-      .min(Number(config.private.validation.zod.min), {
-        message: String(t.min).replaceAll(
-          ':value',
-          String(config.private.validation.zod.min)
-        ),
-      }),
+      .refine(
+        val => val.trim().length > Number(config.private.validation.zod.min),
+        {
+          error: () => ({
+            message: String(t.min).replaceAll(
+              ':value',
+              String(config.private.validation.zod.min)
+            ),
+          }),
+        }
+      ),
     lastName: z
       .string({
         error: () => ({ message: t.required }),
       })
-      .min(Number(config.private.validation.zod.min), {
-        message: String(t.min).replaceAll(
-          ':value',
-          String(config.private.validation.zod.min)
-        ),
-      }),
+      .refine(
+        val => val.trim().length > Number(config.private.validation.zod.min),
+        {
+          error: () => ({
+            message: String(t.min).replaceAll(
+              ':value',
+              String(config.private.validation.zod.min)
+            ),
+          }),
+        }
+      ),
     mailingAddress: z.email({
       error: () => ({ message: t.email }),
     }),
@@ -80,9 +111,7 @@ export default defineEventHandler(async (event: H3Event) => {
     loginSchema.safeParse(body)
   )
 
-  console.log('payload data: ', payload.data)
-
-  const response: ApiResponse | null = payload.success
+  const response: Response | null = payload.success
     ? ((await api(config.private.api.auth.clientUser.create, {
         method: 'POST',
         body: {
@@ -102,11 +131,13 @@ export default defineEventHandler(async (event: H3Event) => {
           origin: config.private.origin.toUpperCase(),
         },
       }).catch(error => {
+        console.error('manager post API error: ', error)
+
         throw createError({
           statusCode: 500,
           statusText: t.server_api_failed,
         })
-      })) as ApiResponse | null)
+      })) as Response | null)
     : null
 
   if (response) {
@@ -116,7 +147,22 @@ export default defineEventHandler(async (event: H3Event) => {
         statusText: response?.pesake.details.pesakeDetail,
       })
     } else {
-      output = await saveUser(response?.data)
+      const auth = authCookie(event)
+      const authUser = auth.getUserSnapShot()
+
+      if (authUser) {
+        output = await db.transaction(async tx => {
+          // get auth user data from DB
+          const user = await tx
+            .select({ userId: users.id })
+            .from(users)
+            .where(eq(users.uuid, authUser.id))
+
+          return createCollaborators(tx, response.data.res, user)
+        })
+      } else {
+        output = null
+      }
     }
   }
 

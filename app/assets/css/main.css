@@ -152,7 +152,7 @@
   --color-border-dark-brown: #797171;
   --color-border-focus-brown: #79717133;
   --color-border-dark-blue: #001051;
-  --color-border-light-brown: #E2E2E2;
+  --color-border-light-brown: #e2e2e2;
 
 
   /**Profile layout color code**/
@@ -164,8 +164,26 @@
   /*profile svg hover background color*/
   --color-sidebar: #f3f2f2;
   /*profile sidebar menu hover background color*/
-  --color-sidebar-hover: #00741D;
+  --color-sidebar-hover: #00741d;
   /*profile menu hover color*/
-  --color-profile-manager: #F2F4FF;
-  --color-account-manager-block: #F3F3F3;
+  --color-profile-manager: #f2f4ff;
+  --color-account-manager-block: #f3f3f3;
+
+  /**Beneficiary page color collection**/
+  --color-red-beneficiary-status: #ff9395;
+  /*beneficiary blocked status badge background color*/
+  --color-red-beneficiary-status-text: #d91414;
+  /*beneficiary blocked status badge text color*/
+  --color-gray-beneficiary-status: #d3cdcd;
+  /*beneficiary archieved status badge background color*/
+  --color-gray-beneficiary-status-text: #797171;
+  /*beneficiary archieved status badge text color*/
+
+  /**Card graident color collection**/
+  --color-card-from: #f2f4ff;
+  /*card gradient from color*/
+  --color-card-to: #c8d2fd;
+  /*card gradient to color*/
+  --color-card-border: #797171;
+  /*card gradient border color*/
 }

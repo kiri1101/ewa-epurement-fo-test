@@ -18,6 +18,10 @@ useHead({
 
 onMounted(() => (otp.value = resetPwdStore.form.otp))
 
+onUnmounted(() => {
+  resetPwdStore.updateFormField('otp', '')
+})
+
 const { remaining, start, stop } = useCountdown(200, {
   onComplete() {
     //
@@ -89,7 +93,7 @@ const next = async () => {
     </p>
 
     <form @submit.prevent="next" class="flex flex-col mt-4 space-y-4">
-      <input-otp-variant
+      <input-otp-night-variant
         identifier="otp"
         v-model="otp"
         size="large"

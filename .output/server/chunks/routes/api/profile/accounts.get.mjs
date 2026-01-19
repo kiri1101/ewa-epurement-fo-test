@@ -1,9 +1,9 @@
-import { d as defineEventHandler, i as getAccounts } from '../../../_/nitro.mjs';
+import { d as defineEventHandler, w as getAccounts } from '../../../_/nitro.mjs';
 import 'drizzle-orm';
+import 'moment';
 import 'drizzle-orm/sqlite-core';
 import 'drizzle-orm/libsql';
 import '@libsql/client';
-import 'moment';
 import 'node:http';
 import 'node:https';
 import 'node:events';

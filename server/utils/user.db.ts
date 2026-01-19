@@ -7,7 +7,7 @@ import {
   InsertBankAcc,
   InsertUserSession,
 } from '~/db/schema'
-import { eq, and } from 'drizzle-orm'
+import { eq, and, lt } from 'drizzle-orm'
 import { Role, BankAcc, AuthData } from '~~/shared/utils/model'
 import type { H3Event } from 'h3'
 import moment from 'moment'
@@ -26,7 +26,7 @@ const getOtp = async (event: H3Event, otpCode: string) => {
     let result = await db
       .select({ otp: users.otp })
       .from(users)
-      .where(and(eq(users.uuid, user?.id), eq(users.otp, Number(otpCode))))
+      .where(and(eq(users.uuid, user?.id), eq(users.otp, otpCode)))
     response = result.length > 0 ? result[0].otp : null
   }
   return response
@@ -46,7 +46,7 @@ const saveUser = async (data: AuthResponse): Promise<AuthData> => {
     status: data.user.status,
     roles: data.user.roles,
     isFirstLogin: Boolean(data.is_first_login),
-    otp: data.otp,
+    otp: String(data.otp),
     bearerToken: data.token,
     refreshToken: data.refreshToken,
     tokenLife: String(data.expired_at),
@@ -64,6 +64,20 @@ const saveUser = async (data: AuthResponse): Promise<AuthData> => {
           eq(users.email, data.user.email),
           eq(users.phoneNumber, data.user.phoneNumber)
         ),
+        with: {
+          sessions: {
+            columns: {
+              uuid: true,
+              userId: true,
+              createdAt: true,
+              expireAt: true,
+            },
+            where: lt(
+              sessions.expireAt,
+              moment().format('YYYY-MM-DDTHH:mm:ss')
+            ),
+          },
+        },
       })
 
       // define session lifecycle
@@ -73,6 +87,13 @@ const saveUser = async (data: AuthResponse): Promise<AuthData> => {
 
       // if yes add new session
       if (authUser) {
+        // clear all expired sessions for auth user
+        if (authUser?.sessions.length > 0) {
+          authUser.sessions.forEach(async session => {
+            await tx.delete(sessions).where(eq(sessions.uuid, session.uuid))
+          })
+        }
+
         sessionId = await createSession(tx, {
           uuid: uuid,
           userId: authUser.id,
@@ -93,6 +114,7 @@ const saveUser = async (data: AuthResponse): Promise<AuthData> => {
             refresh: data.refreshToken,
           },
           sessionId: sessionId,
+          isValidator: data.user.roles.includes('Validation') ? true : false,
         }
       } else {
         const user: UserResponse[] = await tx
@@ -129,14 +151,12 @@ const saveUser = async (data: AuthResponse): Promise<AuthData> => {
             refresh: data.refreshToken,
           },
           sessionId: sessionId,
+          isValidator: data.user.roles.includes('Validation') ? true : false,
         }
       }
 
       return output
     } catch (error) {
-      console.error('save user auth error: ', error)
-      console.log('save user auth log error: ', error)
-
       throw createError({
         status: 500,
         statusText: 'Failed to create user record',

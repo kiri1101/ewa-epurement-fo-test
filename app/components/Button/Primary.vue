@@ -19,6 +19,7 @@ const pt = {
 .p-button {
   background: var(--color-button-main) !important;
   border-color: var(--color-button-main-border) !important;
+
   &:hover {
     background: var(--color-button-main-hover) !important;
     border-color: var(--color-button-main-hover-border) !important;

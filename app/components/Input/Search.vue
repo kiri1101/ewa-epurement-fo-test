@@ -28,7 +28,7 @@ const pt = {
 .p-inputtext.p-variant-filled {
   background-color: var(--color-input) !important;
   border-color: var(--color-border-dark-brown) !important;
-  color: var(--color-input-text) !important;
+  color: var(--color-input-focus-text) !important;
   border-radius: 2rem;
 
   &:focus {

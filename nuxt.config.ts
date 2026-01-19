@@ -58,7 +58,22 @@ export default defineNuxtConfig({
           login: process.env.EXT_AUTH_LOGIN,
           resetPwd: process.env.EXT_AUTH_RESET_PASSWORD,
           clientUser: {
+            list: process.env.EXT_GET_CLIENT_USERS,
             create: process.env.EXT_CREATE_CLIENT_USER,
+          },
+        },
+        beneficiary: {
+          list: process.env.EXT_BENEFICIARY_LIST,
+          create: process.env.EXT_CREATE_BENEFICIARY,
+          setting: process.env.EXT_BENEFICIARY_SETTING,
+        },
+        transfer: {
+          list: process.env.EXT_TRANSFER_LIST,
+          types: process.env.EXT_TRANSFER_TYPES,
+          create: process.env.EXT_TRANSFER_CREATE,
+          otp: {
+            request: process.env.EXT_TRANSFER_REQ_OTP,
+            validate: process.env.EXT_TRANSFER_VALIDATE_OTP,
           },
         },
       },
@@ -81,6 +96,8 @@ export default defineNuxtConfig({
       baseUrl: process.env.BASE_URL,
       fsUrl: process.env.API_ASSET_URL,
       rfsUrl: process.env.READ_ASSET_URL,
+      fileUrl: process.env.API_BASE_URL,
+      origin: process.env.ORIGIN,
       app: {
         name: process.env.APP_NAME,
         assets: {
@@ -88,6 +105,7 @@ export default defineNuxtConfig({
           secret: process.env.ASSET_SECRET,
         },
         toastLife: process.env.TOAST_LIFECYCLE,
+        apiTimeout: process.env.API_CALL_TIMEOUT,
       },
       page: {
         login: process.env.PAGE_LOGIN,
@@ -101,6 +119,27 @@ export default defineNuxtConfig({
         validateOtp: process.env.API_VALIDATE_OTP,
         updatePwd: process.env.API_UPDATE_PWD,
         createManage: process.env.API_CREATE_CLIENT_USER,
+        managerList: process.env.API_LIST_CLIENT_USER,
+        collaborator: {
+          search: process.env.API_SEARCH_CLIENT_USER,
+        },
+        beneficiary: {
+          list: process.env.API_BENEFICIARY_LIST,
+          create: process.env.API_BENEFICIARY_CREATE,
+          setting: process.env.API_BENEFICIARY_SETTING,
+        },
+        transfer: {
+          list: process.env.API_TRANSFER_LIST,
+          search: process.env.API_TRANSFER_SEARCH,
+          types: process.env.API_TRANSFER_TYPES,
+          setting: process.env.API_TRANSFER_SETTING,
+          create: process.env.API_TRANSFER_CREATE,
+          otp: {
+            request: process.env.API_TRANSFER_REQ_OTP,
+            validate: process.env.API_TRANSFER_VALIDATE_OTP,
+          },
+        },
+        fileUpload: process.env.EXT_FILE_UPLOAD,
       },
     },
   },

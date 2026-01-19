@@ -37,6 +37,7 @@ const hideLoader = () => (isLoading.value = false)
 
 const submit = async () => {
   showLoader()
+  form.value.lang = locale.value
   try {
     const { apiResponse, validError } = await $apiFetch(
       config.public.api.login,

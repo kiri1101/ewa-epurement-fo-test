@@ -1,9 +1,9 @@
 import { d as defineEventHandler, b as authCookie, g as deleteUser } from '../../../_/nitro.mjs';
 import 'drizzle-orm';
+import 'moment';
 import 'drizzle-orm/sqlite-core';
 import 'drizzle-orm/libsql';
 import '@libsql/client';
-import 'moment';
 import 'node:http';
 import 'node:https';
 import 'node:events';

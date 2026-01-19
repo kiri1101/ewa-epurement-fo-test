@@ -5,7 +5,9 @@ definePageMeta({
 })
 
 const config = useRuntimeConfig()
-const { t } = useI18n()
+const { $apiFetch } = useNuxtApp() as any
+const { t, locale } = useI18n()
+const { e, s } = useNotify()
 const assetStore = useAssetStore()
 const auth = useAuthStore()
 const showLoader = ref({
@@ -14,6 +16,7 @@ const showLoader = ref({
 
 onMounted(() => {
   showLoader.value.banner = assetStore.hasAssets ? true : false
+  console.log(auth.state)
 })
 
 useHead({
@@ -204,6 +207,16 @@ useHead({
           </div>
         </li>
       </ul>
+    </section>
+
+    <section class="mt-10 pb-5">
+      <p
+        class="border-l-4 border-auth-page bg-gray-100 pl-5 py-1.5 mb-5 text-base text-gray-500 font-normal"
+      >
+        Transfer history
+      </p>
+
+      <table-transfert />
     </section>
   </div>
 </template>

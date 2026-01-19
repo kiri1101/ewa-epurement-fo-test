@@ -1,1 +1,0 @@
-import{G as s,H as r,r as o}from"./C8ladftT.js";const c=s("authUser",()=>{const e=o(null);return{state:e,getUserSnapShot:()=>e.value?e.value:null,store:t=>e.value=t,clear:()=>e.value=null}},{persist:{storage:r.cookies()}});export{c as u};

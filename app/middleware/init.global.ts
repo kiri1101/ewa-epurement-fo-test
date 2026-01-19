@@ -13,15 +13,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         },
       })
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('get assets response ssr: ', response)
-      }
       assetStore.setAssets(response)
-    } catch (error) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('get assets error ssr: ', error)
-      }
-    }
+    } catch (error) {}
+  }
+
+  if (import.meta.server) {
+    await $fetch('/api/seed/currency', {
+      baseURL: config.public.baseUrl,
+      method: 'POST',
+    })
   }
 
   if (to.path === '/') {

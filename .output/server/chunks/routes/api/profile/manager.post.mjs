@@ -1,10 +1,10 @@
-import { d as defineEventHandler, u as useRuntimeConfig, r as readBody, l as loadLocale, f as fetch, a as readValidatedBody, c as createError, s as saveUser, e as errorMap } from '../../../_/nitro.mjs';
+import { d as defineEventHandler, u as useRuntimeConfig, r as readBody, l as loadLocale, f as fetch, a as readValidatedBody, c as createError, b as authCookie, j as db, C as users, D as createCollaborators, e as errorMap } from '../../../_/nitro.mjs';
+import { eq } from 'drizzle-orm';
 import * as z from 'zod';
-import 'drizzle-orm';
+import 'moment';
 import 'drizzle-orm/sqlite-core';
 import 'drizzle-orm/libsql';
 import '@libsql/client';
-import 'moment';
 import 'node:http';
 import 'node:https';
 import 'node:events';
@@ -121,28 +121,43 @@ const manager_post = defineEventHandler(async (event) => {
   const loginSchema = z.object({
     pseudo: z.string({
       error: () => ({ message: t.required })
-    }).min(Number(config.private.validation.zod.min), {
-      message: String(t.min).replaceAll(
-        ":value",
-        String(config.private.validation.zod.min)
-      )
-    }),
+    }).refine(
+      (val) => val.trim().length > Number(config.private.validation.zod.min),
+      {
+        error: () => ({
+          message: String(t.min).replaceAll(
+            ":value",
+            String(config.private.validation.zod.min)
+          )
+        })
+      }
+    ),
     firstName: z.string({
       error: () => ({ message: t.required })
-    }).min(Number(config.private.validation.zod.min), {
-      message: String(t.min).replaceAll(
-        ":value",
-        String(config.private.validation.zod.min)
-      )
-    }),
+    }).refine(
+      (val) => val.trim().length > Number(config.private.validation.zod.min),
+      {
+        error: () => ({
+          message: String(t.min).replaceAll(
+            ":value",
+            String(config.private.validation.zod.min)
+          )
+        })
+      }
+    ),
     lastName: z.string({
       error: () => ({ message: t.required })
-    }).min(Number(config.private.validation.zod.min), {
-      message: String(t.min).replaceAll(
-        ":value",
-        String(config.private.validation.zod.min)
-      )
-    }),
+    }).refine(
+      (val) => val.trim().length > Number(config.private.validation.zod.min),
+      {
+        error: () => ({
+          message: String(t.min).replaceAll(
+            ":value",
+            String(config.private.validation.zod.min)
+          )
+        })
+      }
+    ),
     mailingAddress: z.email({
       error: () => ({ message: t.email })
     }),
@@ -174,7 +189,6 @@ const manager_post = defineEventHandler(async (event) => {
     event,
     (body) => loginSchema.safeParse(body)
   );
-  console.log("payload data: ", payload.data);
   const response = payload.success ? await api(config.private.api.auth.clientUser.create, {
     method: "POST",
     body: {
@@ -194,6 +208,7 @@ const manager_post = defineEventHandler(async (event) => {
       origin: config.private.origin.toUpperCase()
     }
   }).catch((error) => {
+    console.error("manager post API error: ", error);
     throw createError({
       statusCode: 500,
       statusText: t.server_api_failed
@@ -206,7 +221,16 @@ const manager_post = defineEventHandler(async (event) => {
         statusText: response == null ? void 0 : response.pesake.details.pesakeDetail
       });
     } else {
-      output = await saveUser(response == null ? void 0 : response.data);
+      const auth = authCookie(event);
+      const authUser = auth.getUserSnapShot();
+      if (authUser) {
+        output = await db.transaction(async (tx) => {
+          const user = await tx.select({ userId: users.id }).from(users).where(eq(users.uuid, authUser.id));
+          return createCollaborators(tx, response.data.res, user);
+        });
+      } else {
+        output = null;
+      }
     }
   }
   return {

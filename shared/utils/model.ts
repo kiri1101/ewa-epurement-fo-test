@@ -61,16 +61,18 @@ export interface AuthResponse {
   otp: number | null
 }
 
-export interface ApiResponse {
-  pesake: {
-    code: string
-    level: string
-    details: {
-      pesakeDetail: string
-      devDetail: string
-    }
-    detail_error: string
+export type Pesake = {
+  code: string
+  level: string
+  details: {
+    pesakeDetail: string
+    devDetail: string
   }
+  detail_error: string
+}
+
+export type ApiResponse = {
+  pesake: Pesake
   data: AuthResponse
 }
 
@@ -87,6 +89,7 @@ export type AuthData = {
     refresh: string
   }
   sessionId: string
+  isValidator: boolean
 }
 
 export type ZodErrorMap = {
@@ -114,4 +117,162 @@ export type ClientUserAccount = {
     role: string
     bank: string
   }
+}
+
+export type CollaboratorList = {
+  firstName: string
+  lastName: string
+  phoneCode: string
+  phoneNumber: string
+  userPseudo: string
+  email: string
+  isActive: number
+  createdDate: string
+  bankinfo: {
+    accountNumber: string
+    roles: string[]
+  }
+}
+
+export type UserCollaboratorResponse = {
+  pesake: Pesake
+  data: {
+    users: CollaboratorList[]
+  }
+}
+
+export type UserCollaboratorForm = {
+  pseudo: string
+  firstName: string
+  lastName: string
+  mailingAddress: string
+  phone: string
+  countryCode: string
+  lang: string
+  accounts: {
+    [key: string]: {
+      id: string
+      role: string
+      bank: string
+    }
+  }
+}
+
+export type BeneficiarySettingFile = {
+  docId: string
+  docCat: string
+  label: string
+  shortLabel: string
+  isRequired: number
+}
+
+export type BeneficiaryAuthorizedCountry = {
+  code: string
+  name: string
+  currency: string
+}
+
+export type BeneficiaryFileList = {
+  MORALE: BeneficiarySettingFile[]
+  PHYSIQUE: BeneficiarySettingFile[]
+}
+
+export type BeneficiarySettingResponse = {
+  pesake: Pesake
+  data: {
+    beneficialConfig: BeneficiaryFileList
+    authorizedCountries: BeneficiaryAuthorizedCountry[]
+  }
+}
+
+export interface BeneficiaryFile {
+  insertId: string
+  tooltip: string
+  title: string
+  required: boolean
+  type: string
+  category: string
+  fileType: string
+}
+
+export interface CountryItem {
+  insertId: string
+  name: string
+  value: string
+}
+
+export interface BeneficiaryResponse {
+  benefSlug: string
+  benefType: string
+  fullName: string
+  country: string
+  email: string
+  phoneCode: string
+  phoneNumber: string
+  address: string
+  benefStatus: string
+  createdAt: string
+  updatedAt: string
+  status: string
+  bankDetails: {
+    bankName: string
+    swiftBic: string
+    iban: string
+  }
+}
+
+export type CustomInsertBeneficiary = {
+  fullName: string
+  country: string
+  bankName: string
+  iban: string
+  status: string
+  code: string
+}
+
+export type TransferResponse = {
+  fileCode: string
+  beneficiaryName: string
+  fileStatus: string
+  accountCode: string
+  accountNumber: string
+  accountType: string
+  accountAmount: string
+  agencyName: string
+  clientName: string
+  userSlug: string
+  amount: string
+  submittedDate: string
+  shouldVerifyDocument: number
+}
+
+export type TransferAttachmentResponse = {
+  fileTypeSlug: string
+  fileTypeCat: string
+  fileTypeName: string
+  isRequired: number
+}
+
+export type TransferTypeResponse = {
+  demandeType: string
+  demandeTypeName: string
+  attachmentList: TransferAttachmentResponse[]
+}
+
+export type TransferTypeFile = {
+  uuid: string
+  name: string
+  code: string
+  category: string
+  isRequired: boolean
+}
+
+export type TransferOtpResponse = {
+  status: string
+  otpCode: string
+  otpLiveTime: number
+}
+
+export type ValidateOtpResponse = {
+  message: string
 }

@@ -36,6 +36,14 @@ var page = {
 	},
 	update_password: {
 		form_title: "Update your password"
+	},
+	beneficiary: {
+		title: "Manage who you send money to",
+		status: {
+			active: "Active",
+			block: "Block",
+			archive: "Archive"
+		}
 	}
 };
 var button = {
@@ -50,7 +58,9 @@ var placeholder = {
 	confirm_new_password: "Confirm new password"
 };
 var success = {
-	welcome: "Welcome to :bankName"
+	welcome: "Welcome to :bankName",
+	collaborator_created: "New collaborator created",
+	file_uploaded: "File uploaded successfully"
 };
 var validation = {
 	required: "This field is required",
@@ -63,7 +73,10 @@ var validation = {
 	server_api_failed: "Service unavailable! Try again later",
 	email: "This field must be a valid email address",
 	client_user_account: "No bank accounts assigned to this user",
-	phone: "Invalid phone number"
+	phone: "Invalid phone number",
+	invalidType: "Please provide a valid type",
+	date: "Invalid date",
+	invalidOtp: "Invalid OTP code"
 };
 var menu = {
 	dashboard: "Dashboard",

@@ -12,6 +12,7 @@ export const fetch = (event: H3Event) => {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
+    timeout: Number(config.public.app.apiTimeout) ?? 10000,
     onRequest({ options }) {
       if (authUser) {
         options.headers.append(

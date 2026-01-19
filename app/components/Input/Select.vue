@@ -1,6 +1,12 @@
 <script setup lang="ts">
-const { placeholder = '' } = defineProps<{
+const {
+  placeholder = '',
+  nameKey = 'name',
+  valueKey = 'value',
+} = defineProps<{
   placeholder?: string
+  nameKey?: string
+  valueKey?: string | null
 }>()
 
 const pt = {
@@ -19,8 +25,8 @@ const pt = {
 
 <template>
   <Select
-    option-label="name"
-    option-value="value"
+    :option-label="nameKey"
+    :option-value="valueKey"
     :placeholder="placeholder"
     :pt="pt"
   />

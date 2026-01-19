@@ -36,6 +36,14 @@ var page = {
 	},
 	update_password: {
 		form_title: "Mettre à jour votre mot de passe"
+	},
+	beneficiary: {
+		title: "Gérez les personnes à qui vous envoyez de l'argent",
+		status: {
+			active: "Actif",
+			block: "Bloquer",
+			archive: "Archiver"
+		}
 	}
 };
 var button = {
@@ -50,7 +58,9 @@ var placeholder = {
 	confirm_new_password: "Confirmer le nouveau mot de passe"
 };
 var success = {
-	welcome: "Bienvenu à :bankName"
+	welcome: "Bienvenu à :bankName",
+	collaborator_created: "Nouveau collaborateur créé",
+	file_uploaded: "Fichier téléchargé avec succès"
 };
 var validation = {
 	required: "Ce champ est obligatoire.",
@@ -63,7 +73,10 @@ var validation = {
 	server_api_failed: "Service indisponible ! Veuillez réessayer plus tard.",
 	email: "Ce champ doit contenir une adresse mail valide",
 	client_user_account: "Aucun compte bancaire n'est associé à cet utilisateur.",
-	phone: "Numéro de téléphone invalide"
+	phone: "Numéro de téléphone invalide",
+	invalidType: "Veuillez fournir un type valide",
+	date: "Veuillez fournir une date valide",
+	invalidOtp: "Code OTP invalide"
 };
 var menu = {
 	dashboard: "Tableau de bord",

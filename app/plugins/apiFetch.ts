@@ -11,6 +11,7 @@ export default defineNuxtPlugin(nuxtApp => {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
+      timeout: Number(config.public.app.apiTimeout) ?? 10000,
     })
   )
 })
