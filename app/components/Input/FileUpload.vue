@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import vueFilePond, { setOptions } from 'vue-filepond'
+import vueFilePond from 'vue-filepond'
+import { setOptions } from 'filepond'
 import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'

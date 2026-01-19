@@ -601,19 +601,19 @@ const _routes = [
     name: "transfer",
     path: "/transfer",
     meta: { ...__nuxt_page_meta$2 || {}, ...{ "middleware": ["authenticated"] } },
-    component: () => import('./transfer-BxUqGM-j.mjs')
+    component: () => import('./transfer-B67iNfNs.mjs')
   },
   {
     name: "dashboard",
     path: "/dashboard",
     meta: { ...__nuxt_page_meta$1 || {}, ...{ "middleware": ["authenticated"] } },
-    component: () => import('./dashboard-CLGLsnMs.mjs')
+    component: () => import('./dashboard-Dpu40vp2.mjs')
   },
   {
     name: "beneficiary",
     path: "/beneficiary",
     meta: { ...__nuxt_page_meta || {}, ...{ "middleware": ["authenticated"] } },
-    component: () => import('./beneficiary-BC1Dtl1y.mjs')
+    component: () => import('./beneficiary-PVz5UYnJ.mjs')
   }
 ];
 const _wrapInTransition = (props, children) => {
@@ -1988,7 +1988,7 @@ function createNuxtI18nContext(nuxt, vueI18n, defaultLocale) {
       return;
     }
     const headers = getLocaleConfig(locale)?.cacheable ? {} : { "Cache-Control": "no-cache" };
-    const messages = await $fetch(`${"/_i18n/2eSAYCch"}/${locale}/messages.json`, { headers });
+    const messages = await $fetch(`${"/_i18n/xo7DqSez"}/${locale}/messages.json`, { headers });
     for (const k of Object.keys(messages)) {
       i18n.mergeLocaleMessage(k, messages[k]);
     }
@@ -6219,7 +6219,7 @@ const i18n_EI7LsD1KYQADczz5hrChviGQCdVM8yUkvFEZLJpmnvM = /* @__PURE__ */ defineN
     {
       localeConfigs.value = useRequestEvent().context.nuxtI18n?.localeConfigs || {};
     }
-    prerenderRoutes(localeCodes.map((locale) => `${"/_i18n/2eSAYCch"}/${locale}/messages.json`));
+    prerenderRoutes(localeCodes.map((locale) => `${"/_i18n/xo7DqSez"}/${locale}/messages.json`));
     const i18n = createI18n(optionsI18n);
     const detectors = useDetectors(useRequestEvent(nuxt), useI18nDetection(nuxt), nuxt);
     const ctx = createNuxtI18nContext(nuxt, i18n, optionsI18n.defaultLocale);
