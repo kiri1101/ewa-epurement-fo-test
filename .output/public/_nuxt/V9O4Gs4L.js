@@ -1,0 +1,1 @@
+import{_ as o,c as t,b as c,o as a,e as _}from"./-5Dqnc0P.js";const r={};function s(l,i){const e=_;return a(),t("div",null,[c(e,{"page-key":n=>n.fullPath},null,8,["page-key"])])}const u=o(r,[["render",s]]);export{u as default};

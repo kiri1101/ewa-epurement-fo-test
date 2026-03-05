@@ -1,0 +1,1 @@
+import{f as e,c as n,t as s,o}from"./-5Dqnc0P.js";const r={class:"text-xs font-semibold transition duration-200 ease-linear text-status-error leading-3.5"},a=e({__name:"ErrorMsg",props:{label:{}},setup(t){return(_,c)=>(o(),n("p",r,s(t.label),1))}}),l=Object.assign(a,{__name:"InputErrorMsg"});export{l as _};

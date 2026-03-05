@@ -1,0 +1,1 @@
+import{f as e,c as o,t as n,o as s}from"./-5Dqnc0P.js";const a={class:"border-l-4 border-primary-light bg-bg-secondary pl-5 py-1.5 mb-5 text-base text-text-secondary font-normal"},r=e({__name:"CustomTitle",props:{label:{}},setup(t){return(c,l)=>(s(),o("p",a,n(t.label),1))}}),m=Object.assign(r,{__name:"CustomTitle"});export{m as _};

@@ -1,0 +1,1 @@
+import{f as n,o,c as t,J as c}from"./-5Dqnc0P.js";const s=n({__name:"Icon",props:{icon:{}},setup(e){return(a,r)=>(o(),t("i",{class:c(["p-1.5 rounded-sm cursor-pointer text-white bg-accent hover:bg-accent-light",e.icon]),style:{"font-size":"0.9rem"}},null,2))}}),i=Object.assign(s,{__name:"ButtonIcon"});export{i as _};

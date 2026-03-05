@@ -1,0 +1,458 @@
+var meta = {
+	title: {
+		login: "Se connecter",
+		forgot_password: "Mot de passe oublier",
+		update_password: "Mettre à jour le mot de passe",
+		dashboard: "Tableau de bord",
+		account: "Mes comptes",
+		beneficiary: {
+			"new": "Nouveau bénéficiaire",
+			show: "Mes bénéficiaires",
+			edit: "Détail d'un bénéficiaire"
+		},
+		transfer: {
+			show: "Mes transferts",
+			"new": "Nouveau transfert",
+			view: "Mon transfert"
+		},
+		profile: {
+			infos: "Mes informations",
+			users: "Mes utilisateurs"
+		},
+		domiciliation: {
+			show: "Mes domiciliations",
+			"new": "Nouvelle domiciliation",
+			view: "Détails de la domiciliation"
+		},
+		doc_viewer: {
+			pdf: "Visualisation du document"
+		}
+	}
+};
+var page = {
+	login: {
+		form_title: "Connectez-vous",
+		intro_msg: {
+			part1: "Faites votre",
+			part2: "demande de transfer en ligne",
+			part3: "dès maintenant!"
+		},
+		forgot_password: "Have you forgotten your password?",
+		security: "Plateform sécurisé"
+	},
+	forgot_password: {
+		form_title: "Vérification 2Fa",
+		intro_msg: {
+			part1: "Un code de vérification a été envoyé à votre email",
+			part2: "Entrez-le ci-dessous."
+		},
+		resend_code: "Renvoyer le code dans:",
+		resend_code_link: "Code non reçu?",
+		resend_code_button: "Renvoyer le code"
+	},
+	update_password: {
+		form_title: "Mettre à jour votre mot de passe"
+	},
+	dashboard: {
+		welcome: "Bienvenu",
+		hero_title: "Gérez facilement vos virements internationaux",
+		total: "Total",
+		pending: "En cours",
+		closed: "Clôturé",
+		action: "Action",
+		required: "Requis",
+		request: "Demandes",
+		transfer_history: "Historique des transferts"
+	},
+	account: {
+		account: "Compte",
+		agency: "Agence",
+		advisor: "Conseiller",
+		available_balance: "Solde disponible",
+		title1: "Voici la liste des comptes bancaires liés à ton compte.",
+		title2: "Gérez vos comptes de débit",
+		client: "Client"
+	},
+	beneficiary: {
+		title: "Gérez les personnes à qui vous envoyez de l'argent",
+		status: {
+			active: "Actif",
+			block: "Bloquer",
+			archive: "Archiver"
+		},
+		card: {
+			country: "Pays",
+			bank: "Banque",
+			iban: "IBAN",
+			status: "Statut",
+			edit: "Modifier",
+			"delete": "Supprimer"
+		},
+		"new": "Ajouter un bénéficiaire",
+		edit: "Modifier un bénéficiaire",
+		id_code: "Code d'identification",
+		name: "Nom et prénom",
+		phone: "Numéro de téléphone",
+		email: "Adresse mail",
+		address1: "Adresse 1",
+		address2: "Adresse 2",
+		bank_name: "Nom de la banque",
+		city: "Ville",
+		town: "Région",
+		postal: "Code postal",
+		nationality: "Nationalité",
+		country: "Pays",
+		type: "Type de bénéficiaire",
+		iban: "IBAN",
+		swift: "SWIFT",
+		docs: "Documents à fournir",
+		upload: "Téléversé",
+		no_file: "Aucun fichier n'a été assigné.",
+		required: "Obligatoire",
+		"delete": {
+			modal_title: "Confirmation",
+			modal_message: "Voulez-vous vraiment supprimer ce bénéficiaire?",
+			confirm: "Supprimer",
+			cancel: "Annuler"
+		}
+	},
+	domiciliation: {
+		title: "Gérez les domiciliations",
+		date: "Date / Heure",
+		id: "Id domiciliation",
+		beneficiary: "Bénéficiaire",
+		nature: "Nature",
+		benefAmount: "Montant du bénéficiaire",
+		history: "Historique des domiciliations",
+		balance: "Solde",
+		action: "Action",
+		"new": {
+			title1: "Gestion des domiciliations",
+			title2: "Créer une nouvelle domiciliation.",
+			infos: "Informations générales & parties",
+			nature_imp: "Nature de l'importation",
+			import_bien: "Importation de Biens",
+			import_service: "Importation de Services",
+			infos_importateur: "Informations Importateur (Vous)",
+			raison_sociale: "Raison Sociale",
+			reg_commerce: "Registre du Commerce",
+			addresse: "Adresse",
+			profession: "Profession",
+			imma_stat: "Immatriculation Statistique",
+			infos_fournisseur: "Informations Fournisseur",
+			select_beneficiary: "Sélectionner un fournisseur",
+			full_name: "Nom / Raison Sociale",
+			country_origin: "Pays d'origine",
+			trans_details: "Détails de la Transaction",
+			reference: "Référence",
+			payment_due_date: "Échéance de paiement",
+			commercial_label: "Désignation Commerciale",
+			chapter: "Chapitre",
+			qty: "Quantité (Poids net)",
+			custom_label: "Nomenclature douanière",
+			declare_import: "Déclaration d'importation",
+			service_desc: "Description du service",
+			onboarding_port: "Bureau d'embarquement",
+			fob_value: "Valeur FOB",
+			caf_value: "Valeur CAF",
+			amount: "Montant",
+			currency: "Devise",
+			foreign_amount: "Montant en devise",
+			converted_amount: "Contre-valeur CFA (Estimée)",
+			documents: "Pièces Justificatives",
+			no_file: "Aucun fichier n'a été assigné.",
+			confirmation: "Confirmation",
+			confirmation_message: "Êtes-vous sûr de vouloir créer cette domiciliation ?",
+			table: {
+				nature: "Nature Imp.",
+				status: "Statut",
+				declare_import: "Declaration Imp."
+			}
+		},
+		edit: {
+			title1: "Consulter votre domiciliation",
+			title2: "Consultez les informations de votre domiciliation comme bon vous semble.",
+			party_involved: "Parties prenantes",
+			"import": "Importateur",
+			supplier: "Fournisseur",
+			operation_details: "Détails de l'opération",
+			designation: "Désignation",
+			qty: "Quantité",
+			office: "Bureau d'embarquement",
+			reference: "Référence facture",
+			fob_value: "Valeur FOB",
+			caf_value: "Valeur CAF",
+			payment_deadline: "Échéance de paiement",
+			custom_infos: "Nomenclature douanière",
+			amount: "Montant en devise",
+			currency: "Devise",
+			chapter: "Chapitre",
+			description: "Description du service",
+			documents: "Pièces justificatives",
+			created_at: "Ajouté le"
+		}
+	},
+	transfer: {
+		title: "Trouvez dans le tableau ci-dessous la liste de vos demandes de transferts",
+		date: "Date / Heure",
+		id: "Id transfert",
+		beneficiary: "Bénéficiaire",
+		nature: "Nature",
+		benefAmount: "Montant du bénéficiaire",
+		balance: "Solde",
+		action: "Action",
+		history: "Historique des transferts",
+		"new": {
+			title1: "Gestion des transferts",
+			title2: "Créer une nouvelle demande de transfert.",
+			type: "Type de demande",
+			motive: "Motif",
+			amount: "Montant",
+			total_amount: "Montant totale",
+			currency: "Devise",
+			rate: "Taux de change",
+			account_num: "Compte",
+			agency: "Agence",
+			target_date: "Date cible",
+			beneficiary: "Bénéficiaire",
+			domiciliation: "Domiciliation",
+			execution_date: "Date d'exécution souhaitée",
+			shared_fee: "Frais partagés",
+			bank_fee: "Frais bancaire",
+			transfer_type: "Type de transfert",
+			description: "Description",
+			iban: "IBAN",
+			dom_options: {
+				create: {
+					title: "Créer",
+					description: "Créer une domiciliation"
+				},
+				select: {
+					title: "Selectionner",
+					description: "Selectionner une domiciliation"
+				},
+				done: {
+					title: "Terminé",
+					description: "Domiciliation déjà créée"
+				}
+			},
+			dom_number: "Numéro de domiciliation",
+			declare_num: "Numéro de demande",
+			remittance_info: "Informations relatives aux virements",
+			handle_cost: "Couvre les frais",
+			cover_cost: {
+				our: "Le client couvre tous les frais de virement",
+				ben: "Le bénéficiaire couvre tous les frais de virement",
+				sha: "Les deux parties partagent les frais de virement"
+			},
+			doc_undertake: "Je m'engage à fournir tous les documents avant la fin des délais réglementaires.",
+			doc_undertake_note: "En cochant cette case, vous reconnaissez que tous les documents requis doivent être soumis dans les délais réglementaires pour éviter les amendes ou la rejet de votre virement.",
+			doc_submit: "Documents à soumettre",
+			uploaded: "Téléversé",
+			no_file: "Aucun fichier n'a été assigné.",
+			ready: "Votre demande est prête à être soumise.",
+			review: "Veuillez vérifier toutes les informations ci-dessous avant de confirmer la soumission.",
+			infos: "Informations sur le transfert",
+			debit_account: "Compte débiteur",
+			submit_confirm: "En soumettant cette demande, vous confirmez que toutes les informations sont exactes et complètes."
+		},
+		details: {
+			title1: "Consultez votre demande",
+			title2: "Consultez et mettez à jour vos informations de transfert.",
+			request_info: "Informations sur la demande",
+			attachments: "Pièces jointes",
+			type: "Type de demande",
+			code: "Code de la demande",
+			beneficiary: "Bénéficiaire",
+			target_date: "Date cible",
+			amount: "Montant",
+			currency: "Devise",
+			account_num: "Numéro de compte",
+			cost_support: "Justificatif de coût",
+			description: "Description",
+			bo_comment: "Commentaire du back office",
+			clearance_comment: "Commentaire d'apurement"
+		},
+		send: {
+			title1: "Initier un transfert de fonds",
+			title2: "Avancez dans votre demande de transfert une fois que vous vous sentez prêt.",
+			otp_message: "Un code OTP a été envoyé à votre adresse e-mail. Veuillez saisir le code pour continuer.",
+			file: "Fichier d'engagement"
+		},
+		engagement: {
+			title: "Engagement accepté.",
+			message_01: "Vous pouvez maintenant soumettre votre demande de transfert. Veuillez télécharger votre lettre d'engagement via le lien",
+			message_02: "et soumettre tous les documents nécessaires avant les délais réglementaires."
+		}
+	},
+	required: "Obligatoire",
+	profile: {
+		menu: {
+			infos: "Informations",
+			users: "Utilisateurs"
+		},
+		infos: {
+			title: "Informations personnelles",
+			id_code: "Code d'identification",
+			first_name: "Nom",
+			last_name: "Prénom",
+			phone: "Numéro de téléphone",
+			email: "Adresse mail",
+			support: "Support",
+			agency: "Agence",
+			address1: "Adresse 1",
+			address2: "Adresse 2",
+			city: "Ville",
+			state: "Région",
+			postal: "Code postal",
+			nationality: "Nationalité",
+			country: "Pays",
+			kyc_status: "Kyc status",
+			information: "Pour modifier vos informations personnelles, contactez le service d'assistance ou votre agence."
+		},
+		collaborator: {
+			title1: "Gestion des utilisateurs",
+			title2: "Gérez les accès système et les rôles utilisateurs pour tous les comptes bancaires.",
+			full_name: "Nom complèt",
+			role: "Role",
+			status: "Statut",
+			created_at: "Créer à",
+			action: "Action"
+		},
+		"new": {
+			title1: "Ajouter un nouveau collaborateur",
+			title2: "Créer un nouveau collaborateur pour gérer vos actifs bancaires.",
+			first_name: "Nom",
+			last_name: "Prénom",
+			pseudo: "Pseudo",
+			mailing_address: "Adresse mail",
+			phone: "Téléphone",
+			accounts: "Comptes affiliés",
+			no_accounts: "Aucun compte bancaire n'a encore été attribué.",
+			role: {
+				title: "Choisissez un rôle associé à ce compte",
+				validation: "Validation",
+				saisie: "Saisie"
+			}
+		},
+		status: {
+			active: "Actif",
+			block: "Bloquer",
+			archive: "Archiver"
+		}
+	}
+};
+var button = {
+	login: "Connexion",
+	verify_code: "Vérifier le code",
+	update_password: "Mettre à jour le mot de passe",
+	logout: "Déconnexion",
+	create_benef: "Créer un bénéficiare",
+	cancel: "Annuler",
+	submit: "Soumettre",
+	next: "Suivant",
+	new_domiciliation: "Nouvelle domiciliation",
+	new_transfer: "Nouveau transfert",
+	send_request: "Enregistrer la demande",
+	add_user: "Ajouter un utilisateur",
+	add_account: "Ajouter un compte",
+	create_user: "Créer un utilisateur",
+	create_dom: "Créer une domiciliation",
+	action: "Action",
+	engagement_letter: "Obtenir la lettre d'engagement",
+	save: "Sauvegarder",
+	back: "Retour",
+	new_beneficiary: "Nouveau bénéficiaire"
+};
+var placeholder = {
+	pseudo: "Pseudo ou email",
+	new_password: "Nouveau mot de passe",
+	confirm_new_password: "Confirmer le nouveau mot de passe",
+	find_transfer: "Rechercher un transfert",
+	find_beneficiary: "Rechercher un bénéficiaire",
+	find_domiciliation: "Rechercher une domiciliation",
+	select_account: "Choisissez un compte",
+	select_beneficiary: "Choisissez un bénéficiaire",
+	select_domiciliation: "Choisissez une domiciliation",
+	upload: "Déposez votre fichier ici..."
+};
+var success = {
+	welcome: "Bienvenu à :bankName",
+	collaborator_created: "Nouveau collaborateur créé",
+	file_uploaded: "Fichier téléchargé avec succès",
+	domiciliation_created: "Domiciliation créée avec succès"
+};
+var validation = {
+	required: "Ce champ est obligatoire.",
+	min: "Ce champ est réquis et doit contenir plus de :value caractères.",
+	max: "Ce champ est réquis et doit contenir moins de :value caractères.",
+	invalidLang: "Veuillez fournir une lang valide",
+	number: "Ce champ doit contenir des chiffres.",
+	payment_method: "Mode de paiement invalide",
+	bad_otp: "OTP incorrecte",
+	pwd_confirm_failed: "Les mots de passe ne correspondent pas.",
+	server_api_failed: "Service indisponible ! Veuillez réessayer plus tard.",
+	email: "Ce champ doit contenir une adresse mail valide",
+	client_user_account: "Aucun compte bancaire n'est associé à cet utilisateur.",
+	phone: "Numéro de téléphone invalide",
+	invalidType: "Veuillez fournir un type valide",
+	date: "Veuillez fournir une date valide",
+	invalidOtp: "Code OTP invalide",
+	invalidId: "Veuillez fournir un ID valide",
+	empty_form: "Veuillez remplir tous les champs obligatoires du formulaire",
+	upload_failed: "Échec du téléversement du fichier! Veuillez réessayer plus tard.",
+	engagement_file: "Veuillez fournir une engagement letter",
+	invalid_key: "La clé fournie doit être une chaîne de caractères.",
+	fill_all_required_fields: "Veuillez remplir tous les champs obligatoires du formulaire",
+	files_required: "Veuillez fournir toutes les pièces jointes requises"
+};
+var error = {
+	unknown: "Une erreur inattendue s'est produite. Veuillez réessayer."
+};
+var menu = {
+	dashboard: "Tableau de bord",
+	account: "Mes comptes",
+	beneficiary: {
+		"new": "Nouveau bénéficiaire",
+		show: "Mes bénéficiaires",
+		edit: "Détail d'un bénéficiaire"
+	},
+	transfer: {
+		show: "Mes transferts",
+		"new": "Nouveau transfert",
+		view: "Détails du transfert"
+	},
+	profile: "Mon profil",
+	domiciliation: {
+		show: "Mes domiciliations",
+		"new": "Nouvelle domiciliation",
+		view: "Voir la domiciliation"
+	},
+	doc_viewer: {
+		pdf: "Visualisation du document"
+	}
+};
+var table = {
+	date_time: "Date / Heure",
+	transaction_id: "ID Transaction",
+	beneficiary: "Bénéficiaire",
+	type: "Type",
+	amount: "Montant",
+	status: "Statut",
+	action: "Action",
+	empty: "Aucun résultat trouvé"
+};
+const fr = {
+	meta: meta,
+	page: page,
+	button: button,
+	placeholder: placeholder,
+	success: success,
+	validation: validation,
+	error: error,
+	menu: menu,
+	table: table
+};
+
+export { button, fr as default, error, menu, meta, page, placeholder, success, table, validation };
+//# sourceMappingURL=fr.mjs.map

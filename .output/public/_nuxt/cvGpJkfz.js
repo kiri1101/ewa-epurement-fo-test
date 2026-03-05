@@ -1,0 +1,1 @@
+import r from"./I81rKUaS.js";import{_ as e,o as s,q as _,w as p,G as a}from"./-5Dqnc0P.js";const c={__name:"InputAddonTransparent",setup(d){const t={root:{class:"h-9 cursor-pointer"}};return(o,u)=>{const n=r;return s(),_(n,{pt:t},{default:p(()=>[a(o.$slots,"default",{},void 0,!0)]),_:3})}}},m=e(c,[["__scopeId","data-v-cf0274d1"]]);export{m as _};
