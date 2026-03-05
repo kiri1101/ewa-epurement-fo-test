@@ -1,5 +1,5 @@
 <template>
-  <NuxtLoadingIndicator color="#10b981" />
+  <NuxtLoadingIndicator color="var(--color-loading-indicator)" />
 
   <NuxtLayout>
     <gadget-toast-notify />

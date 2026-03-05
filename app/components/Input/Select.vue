@@ -12,7 +12,7 @@ const {
 const pt = {
   root: {
     class:
-      'w-full h-9 focus:border-auth-input-border-focus placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-auth-input-ring peer',
+      'w-full h-9 placeholder-text-muted focus:outline-none focus:ring-2 peer',
   },
   label: {
     style: 'font-size: 0.875rem; line-height: 1.25rem;',
@@ -29,20 +29,34 @@ const pt = {
     :option-value="valueKey"
     :placeholder="placeholder"
     :pt="pt"
+    filter
   />
 </template>
 
-<style scoped>
+<style>
 .p-select {
-  background-color: var(--color-input) !important;
-  border-color: var(--color-border-dark-brown) !important;
-  color: var(--color-input-text) !important;
+  background-color: var(--color-bg-main) !important;
+  border-color: var(--color-primary-light) !important;
+  color: var(--color-text-primary) !important;
 
   &:focus {
-    background-color: var(--color-input-focus) !important;
-    border-color: var(--color-border-brown) !important;
-    box-shadow: 0 0 0 0.2rem var(--color-border-focus-brown) !important;
-    color: var(--color-input-focus-text) !important;
+    background-color: var(--color-bg-secondary) !important;
+    border-color: var(--color-primary-light) !important;
+    box-shadow: 0 0 0 0.2rem var(--color-ring-focus) !important;
+    color: var(--color-text-primary) !important;
+  }
+}
+.p-select-filter {
+  height: 2rem !important;
+  background-color: var(--color-bg-main) !important;
+  border-color: var(--color-primary-light) !important;
+  color: var(--color-text-primary) !important;
+
+  &:focus {
+    background-color: var(--color-bg-secondary) !important;
+    border-color: var(--color-primary-light) !important;
+    box-shadow: 0 0 0 0.2rem var(--color-ring-focus) !important;
+    color: var(--color-text-primary) !important;
   }
 }
 </style>

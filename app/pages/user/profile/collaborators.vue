@@ -3,12 +3,11 @@ import moment from 'moment'
 
 const config = useRuntimeConfig()
 const { t, locale } = useI18n()
-const assetStore = useAssetStore()
+const bankStore = useBankStore()
 const { $apiFetch } = useNuxtApp() as any
 const isLoading = ref(false)
 const isListLoading = ref(false)
 const isSearching = ref(false)
-const showLoader = ref(true)
 const showModal = ref(false)
 const { e, s } = useNotify()
 const validErrorMsg = ref({
@@ -20,7 +19,6 @@ const validErrorMsg = ref({
   countryCode: '',
   accounts: '',
 })
-const accountList = ref<UserAccount[] | any[]>([])
 const form = ref<UserCollaboratorForm>({
   pseudo: '',
   firstName: '',
@@ -32,6 +30,8 @@ const form = ref<UserCollaboratorForm>({
   accounts: {},
 })
 const collaboratorList = ref()
+const filteredCollaboratorList = ref()
+const searchTimeout = ref()
 const searchIndex = ref('')
 
 useHead({
@@ -40,17 +40,27 @@ useHead({
 })
 
 onMounted(() => {
-  showLoader.value = assetStore.hasAssets ? false : true
   list()
 })
 
 const showManagers = computed(
-  () => Object.values(form.value.accounts).length > 0
+  () => Object.values(form.value.accounts).length > 0,
+)
+
+const accountList = computed(() =>
+  bankStore.accounts.map((account: AccountModel) => {
+    return {
+      id: account.uuid,
+      agency: account.agency,
+      value: account.accRef,
+      iban: account.iBan,
+      type: account.accType,
+    }
+  }),
 )
 
 const openModal = () => {
   showModal.value = true
-  getAccountList()
 }
 
 const closingModal = () => {
@@ -95,18 +105,6 @@ const addManager = () => {
 
 const removeManager = (id: string) => delete form.value.accounts[id]
 
-const getAccountList = async () => {
-  const { apiResponse } = await $apiFetch('/api/profile/accounts')
-
-  if (apiResponse) {
-    accountList.value = apiResponse
-  }
-}
-
-const showSearchLoader = () => (isSearching.value = true)
-
-const hideSearchLoader = () => (isSearching.value = false)
-
 const showSubmitLoader = () => (isLoading.value = true)
 
 const hideSubmitLoader = () => (isLoading.value = false)
@@ -128,31 +126,20 @@ const resetValidMsg = () => {
 }
 
 const searchCollaborator = async () => {
-  showSearchLoader()
-  try {
-    const { apiResponse, validError } = await $apiFetch(
-      config.public.api.collaborator.search,
-      {
-        method: 'POST',
-        body: {
-          searchIndex: searchIndex.value,
-        },
-      }
-    )
-
-    if (validError) {
-      validError.forEach((err: any) => e(err?.message))
-    }
-
-    collaboratorList.value = apiResponse
-  } catch (error: any) {
-    const errorMsg = handleApiError(error)
-    if (errorMsg.length > 0) {
-      e(errorMsg)
-    }
-  } finally {
-    hideSearchLoader()
-  }
+  filteredCollaboratorList.value = collaboratorList.value.filter(
+    (collaborator: any) => {
+      return (
+        collaborator.firstName
+          .trim()
+          .toLowerCase()
+          .includes(searchIndex.value.trim().toLowerCase()) ||
+        collaborator.lastName
+          .trim()
+          .toLowerCase()
+          .includes(searchIndex.value.trim().toLowerCase())
+      )
+    },
+  )
 }
 
 const list = async () => {
@@ -165,10 +152,11 @@ const list = async () => {
         body: {
           lang: locale.value,
         },
-      }
+      },
     )
 
     collaboratorList.value = apiResponse
+    filteredCollaboratorList.value = apiResponse
   } catch (error: any) {
     const errorMsg = handleApiError(error)
     if (errorMsg.length > 0) {
@@ -188,7 +176,7 @@ const submit = async () => {
       {
         method: 'POST',
         body: form.value,
-      }
+      },
     )
 
     if (validError) {
@@ -214,20 +202,35 @@ const submit = async () => {
     hideSubmitLoader()
   }
 }
+
+watch(
+  () => searchIndex.value,
+  newIndex => {
+    clearTimeout(searchTimeout.value)
+
+    if (newIndex.trim().length >= 2) {
+      searchTimeout.value = setTimeout(() => {
+        searchCollaborator()
+      }, 500)
+    } else {
+      filteredCollaboratorList.value = collaboratorList.value
+    }
+  },
+)
 </script>
 
 <template>
   <div class="pb-5">
     <gadget-banner>
       <div class="grid grid-cols-[auto_1fr] h-full">
-        <div
-          class="grid justify-center ml-2 text-sm text-sidebar-text-primary lg:text-base"
-        >
+        <div class="grid justify-center ml-2 text-sm text-white lg:text-base">
           <div class="ml-5 translate-y-8">
-            <h3 class="font-semibold">Users management</h3>
+            <h3 class="font-semibold">
+              {{ $t('page.profile.collaborator.title1') }}
+            </h3>
 
             <h4 class="text-xs">
-              Manage system access and user roles across all bank accounts.
+              {{ $t('page.profile.collaborator.title2') }}
             </h4>
           </div>
         </div>
@@ -235,7 +238,7 @@ const submit = async () => {
         <div class="flex justify-end">
           <gadget-image-blur>
             <img
-              :src="assetStore.list.profile"
+              src="/images/profile.png"
               class="z-30 object-cover object-center w-auto h-22"
               alt="Bank Logo"
             />
@@ -245,34 +248,17 @@ const submit = async () => {
     </gadget-banner>
 
     <section class="mt-5 space-y-5">
-      <div class="flex flex-row space-x-6">
-        <div class="flex relative grow">
-          <input-search
-            v-model="searchIndex"
-            identifier="search"
-            placeholder="Find a manager"
-          />
-
-          <div
-            class="flex items-center space-x-1 absolute right-0 z-50 -translate-x-1 translate-y-[0.17rem]"
-          >
-            <i
-              v-if="isSearching"
-              class="pi pi-spinner text-button-main animate-spin"
-            />
-
-            <i
-              class="pi pi-search p-2 bg-button-main hover:bg-button-main-hover text-input-text rounded-full cursor-pointer"
-              style="font-size: 0.9rem"
-              @click.prevent="searchCollaborator"
-            />
-          </div>
-        </div>
+      <div class="flex flex-row space-x-4">
+        <gadget-search
+          v-model="searchIndex"
+          :is-loading="isSearching"
+          @search="searchCollaborator"
+        />
 
         <div>
           <button-primary
             @click.prevent="openModal"
-            label="Add user"
+            :label="$t('button.add_user')"
             icon="pi pi-plus-circle"
           />
         </div>
@@ -280,26 +266,27 @@ const submit = async () => {
 
       <div>
         <DataTable
-          :value="collaboratorList"
-          tableStyle="max-width: 50rem;"
+          :value="filteredCollaboratorList"
           :loading="isListLoading"
+          paginator
+          :rows="5"
+          :rowsPerPageOptions="[5, 10, 20]"
           :pt="{
             root: 'text-xs',
             row: {
-              headerRow: 'bg-profile',
+              headerRow: 'bg-border-main',
             },
           }"
+          resizableColumns
+          columnResizeMode="fit"
+          showGridlines
         >
           <Column
-            header="Name"
+            :header="$t('page.profile.collaborator.full_name')"
             :pt="{
               columnTitle: 'text-xs',
               columnHeaderContent: 'flex justify-center',
             }"
-            style="
-              border-top-left-radius: var(--radius-lg) !important;
-              border-right: 1px solid var(--color-border-brown);
-            "
           >
             <template #body="slotProps">
               <div class="text-left w-full">
@@ -308,47 +295,44 @@ const submit = async () => {
             </template>
           </Column>
           <Column
-            header="Role"
+            :header="$t('page.profile.collaborator.role')"
             :pt="{
               columnTitle: 'text-xs',
               columnHeaderContent: 'flex justify-center',
             }"
-            style="border-right: 1px solid var(--color-border-brown)"
           >
             <template #body="slotProps">
               {{ slotProps.data.roles[0] }}
             </template>
           </Column>
           <Column
-            header="Created At"
+            :header="$t('page.profile.collaborator.created_at')"
             :pt="{
               columnTitle: 'text-xs',
-              headerCell: 'bg-profile',
+              headerCell: 'bg-border-main',
               columnHeaderContent: 'flex justify-center',
             }"
-            style="border-right: 1px solid var(--color-border-brown)"
           >
             <template #body="slotProps">
               {{ moment(slotProps.data.createdAt).format('Do MMM YYYY') }}
             </template>
           </Column>
           <Column
-            header="Status"
+            :header="$t('page.profile.collaborator.status')"
             :pt="{
               columnTitle: 'text-xs',
               columnHeaderContent: 'flex justify-center',
             }"
-            style="border-right: 1px solid var(--color-border-brown)"
           >
             <template #body="slotProps">
               <div class="flex justify-center">
                 <span
                   :class="[
-                    'inline-flex items-center justify-self-center rounded-md border px-2.5 py-0.5 space-x-1.5',
+                    'inline-flex items-center justify-self-center rounded-md border px-2.5 py-0.5 space-x-1.5 bg-bg-secondary',
                     {
-                      'text-auth-text-secondary border-border-green bg-stat-total-demand':
+                      'text-status-success border-status-success ':
                         slotProps.data.isActive,
-                      'text-input-profile-label border-dark-brown bg-stat-pending-demand':
+                      'text-status-error border-status-error':
                         !slotProps.data.isActive,
                     },
                   ]"
@@ -356,26 +340,23 @@ const submit = async () => {
                 >
                   <button
                     type="button"
-                    class="rounded-full bg-border-green size-1.5"
+                    class="rounded-full bg-status-success size-1.5"
                   />
 
-                  <span>Active</span>
+                  <span>{{ $t('page.profile.status.active') }}</span>
                 </span>
               </div>
             </template>
           </Column>
-          <Column
-            header="Action"
-            style="border-top-right-radius: var(--radius-lg) !important"
-          ></Column>
+          <Column :header="$t('page.profile.collaborator.action')"></Column>
 
           <template #empty>
-            <div
-              class="grid items-center h-40 text-border-brown/70 text-center"
-            >
+            <div class="grid items-center h-40 text-text-secondary text-center">
               <p class="flex flex-col space-y-1">
                 <i class="pi pi-inbox" style="font-size: 2rem" />
-                <span class="font-semibold">No data</span>
+                <span class="font-semibold">
+                  {{ $t('table.empty') }}
+                </span>
               </p>
             </div>
           </template>
@@ -393,13 +374,15 @@ const submit = async () => {
             <gadget-banner>
               <div class="grid grid-cols-[auto_1fr]">
                 <div
-                  class="grid justify-center ml-2 text-sm text-sidebar-text-primary lg:text-base"
+                  class="grid justify-center ml-2 text-sm text-white lg:text-base"
                 >
                   <div class="ml-5 space-y-1 translate-y-6">
-                    <h3 class="font-semibold">Add a new manager</h3>
+                    <h3 class="font-semibold">
+                      {{ $t('page.profile.new.title1') }}
+                    </h3>
 
                     <h4 class="text-xs">
-                      Create a new manager with access to your accounts
+                      {{ $t('page.profile.new.title2') }}
                     </h4>
                   </div>
                 </div>
@@ -407,7 +390,7 @@ const submit = async () => {
                 <div class="flex justify-end">
                   <gadget-image-blur>
                     <img
-                      :src="assetStore.list.create_manager"
+                      src="/images/create_manager.png"
                       class="z-30 object-cover object-center translate-x-5 translate-y-3 size-18"
                       alt="Create User Logo"
                     />
@@ -421,17 +404,15 @@ const submit = async () => {
                 class="grid grid-cols-2 gap-2 p-3 space-y-0.5 h-72 overflow-auto"
               >
                 <div>
-                  <label
-                    for="firstName"
-                    class="text-xs text-input-profile-label"
-                  >
-                    Nom
+                  <label for="firstName" class="text-xs text-text-secondary">
+                    {{ $t('page.profile.new.first_name') }}
                   </label>
 
                   <input-bg-normal
                     v-model="form.firstName"
                     identifier="firstName"
                     placeholder="John"
+                    class="uppercase"
                   />
 
                   <input-error-msg
@@ -441,17 +422,15 @@ const submit = async () => {
                 </div>
 
                 <div>
-                  <label
-                    for="lastName"
-                    class="text-xs text-input-profile-label"
-                  >
-                    Prénom
+                  <label for="lastName" class="text-xs text-text-secondary">
+                    {{ $t('page.profile.new.last_name') }}
                   </label>
 
                   <input-bg-normal
                     v-model="form.lastName"
                     identifier="lastName"
                     placeholder="Doe"
+                    class="uppercase"
                   />
 
                   <input-error-msg
@@ -461,14 +440,15 @@ const submit = async () => {
                 </div>
 
                 <div>
-                  <label for="pseudo" class="text-xs text-input-profile-label">
-                    Pseudo
+                  <label for="pseudo" class="text-xs text-text-secondary">
+                    {{ $t('page.profile.new.pseudo') }}
                   </label>
 
                   <input-bg-normal
                     v-model="form.pseudo"
                     identifier="pseudo"
                     placeholder="J.Doe"
+                    class="uppercase"
                   />
 
                   <input-error-msg
@@ -478,21 +458,14 @@ const submit = async () => {
                 </div>
 
                 <div>
-                  <label for="email" class="text-xs text-input-profile-label">
-                    Email
+                  <label for="email" class="text-xs text-text-secondary">
+                    {{ $t('page.profile.new.mailing_address') }}
                   </label>
 
                   <input-group>
                     <input-group-addon pt:root="border-dark-brown">
-                      <skeleton
-                        v-if="showLoader"
-                        width="100%"
-                        height="1.125rem"
-                      />
-
                       <img
-                        v-else
-                        :src="assetStore.list.email_svg"
+                        src="/images/email_svg.svg"
                         class="object-center object-contain size-4.5"
                         alt="Email Logo Svg"
                       />
@@ -513,8 +486,8 @@ const submit = async () => {
                 </div>
 
                 <div class="col-span-2">
-                  <label for="email" class="text-xs text-input-profile-label">
-                    Téléphone
+                  <label for="email" class="text-xs text-text-secondary">
+                    {{ $t('page.profile.new.phone') }}
                   </label>
 
                   <input-phone @validate="updateFormPhone" />
@@ -529,11 +502,13 @@ const submit = async () => {
                   <div>
                     <ul class="grid items-center grid-cols-2">
                       <li>
-                        <h3 class="text-sm font-bold">Bank account access</h3>
+                        <h3 class="text-sm font-bold">
+                          {{ $t('page.profile.new.accounts') }}
+                        </h3>
                       </li>
                       <li>
                         <button-primary
-                          label="Add an account"
+                          :label="$t('button.add_account')"
                           icon="pi pi-plus-circle"
                           @click.prevent="addManager"
                         />
@@ -553,20 +528,17 @@ const submit = async () => {
                       :data="accountList"
                       @delete="removeManager(acc.id)"
                       @role="e => updateRole(e, acc.id)"
-                      @bank="e => updateBank(e, acc.id)"
+                      @bank="e => updateBank(e.value, acc.id)"
                     />
                   </div>
 
                   <div
                     v-else
-                    class="grid grid-cols-2 border border-dashed rounded-lg bg-profile-manager border-border-dark-blue h-28"
+                    class="grid grid-cols-2 border border-dashed rounded-lg bg-bg-secondary border-primary-light h-28"
                   >
                     <div class="grid items-center justify-center">
-                      <skeleton v-if="showLoader" width="100%" height="3rem" />
-
                       <img
-                        v-else
-                        :src="assetStore.list.greek_house_svg"
+                        src="/images/greek_house_svg.svg"
                         class="object-contain object-center size-12"
                         alt="New manager Logo Svg"
                       />
@@ -575,20 +547,23 @@ const submit = async () => {
                     <div
                       class="flex items-center justify-start p-4 text-sm text-right"
                     >
-                      <p>No bank account has been assigned yet.</p>
+                      <p>{{ $t('page.profile.new.no_accounts') }}</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div
-                class="grid justify-end grid-flow-col gap-3 p-2 border-t border-border-dark-brown/30"
+                class="grid justify-end grid-flow-col gap-3 p-2 border-t border-primary-light"
               >
-                <button-outline label="Cancel" @click.prevent="closeCallback" />
+                <button-outline
+                  :label="$t('button.cancel')"
+                  @click.prevent="closeCallback"
+                />
 
                 <button-primary
                   type="submit"
-                  label="Create a user"
+                  :label="$t('button.create_user')"
                   :loading="isLoading"
                 />
               </div>
@@ -602,11 +577,7 @@ const submit = async () => {
 
 <style>
 .p-inputgroupaddon {
-  background: var(--color-input) !important;
-  border: 1px solid var(--color-border-dark-brown) !important;
-}
-
-.p-datatable-header-cell {
-  background: var(--color-sidebar) !important;
+  background: var(--color-bg-secondary) !important;
+  border: 1px solid var(--color-primary-light) !important;
 }
 </style>

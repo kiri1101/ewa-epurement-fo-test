@@ -1,6 +1,6 @@
 import type { AuthData } from '~~/shared/utils/model'
 
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware(async to => {
   const config = useRuntimeConfig()
   const authStoreRef = useCookie<{ state: AuthData }>('authUser')
 

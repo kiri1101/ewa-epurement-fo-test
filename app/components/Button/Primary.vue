@@ -2,11 +2,10 @@
 const pt = {
   root: {
     class:
-      'w-full font-semibold h-8 xl:h-9 rounded-md hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary-ring',
+      'w-full font-semibold h-8 xl:h-9 rounded-md focus:outline-none focus:ring-2 focus:ring-accent-dark',
   },
   label: {
-    class:
-      'text-xs xl:text-sm text-button-main-label hover:text-button-main-hover-label text-nowrap',
+    class: 'text-xs xl:text-sm text-white text-nowrap',
   },
 }
 </script>
@@ -17,12 +16,12 @@ const pt = {
 
 <style scoped>
 .p-button {
-  background: var(--color-button-main) !important;
-  border-color: var(--color-button-main-border) !important;
+  background: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
 
   &:hover {
-    background: var(--color-button-main-hover) !important;
-    border-color: var(--color-button-main-hover-border) !important;
+    background: var(--color-accent-light) !important;
+    border-color: var(--color-accent-light) !important;
   }
 }
 </style>

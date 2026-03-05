@@ -1,9 +1,7 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
 const { t } = useI18n()
-const assetStore = useAssetStore()
 const auth = useAuthStore()
-const showLoader = ref(true)
 const form = ref({
   firstName: '',
   lastName: '',
@@ -11,7 +9,16 @@ const form = ref({
   phone: '',
   agency: '',
   support: '',
+  idCode: '',
+  line1: '',
+  line2: '',
+  city: '',
+  state: '',
+  postalCode: '',
+  country: '',
+  nationality: '',
   kyc: false,
+  isResident: false,
 })
 
 useHead({
@@ -20,31 +27,41 @@ useHead({
 })
 
 onMounted(() => {
-  showLoader.value = assetStore.hasAssets ? false : true
-  form.value.firstName = auth.state ? auth.state?.firstName : ''
-  form.value.lastName = auth.state ? auth.state?.lastName : ''
-  form.value.email = auth.state ? auth.state?.emailAddress : ''
-  form.value.phone = auth.state ? auth.state?.phoneNumber : ''
-  form.value.kyc = auth.state ? auth.state?.kycStatus : false
+  updateInfos()
 })
 
 const kycLabel = computed(() => (form.value.kyc ? 'Active' : 'Inactive'))
+
+const updateInfos = () => {
+  form.value.firstName = auth.state?.firstName ?? ''
+  form.value.lastName = auth.state?.lastName ?? ''
+  form.value.email = auth.state?.emailAddress ?? ''
+  form.value.phone = auth.state?.phoneNumber ?? ''
+  form.value.kyc = auth.state?.kycStatus ?? false
+  form.value.line1 = auth.state?.address ?? ''
+  form.value.line2 = auth.state?.address2 ?? ''
+  form.value.city = auth.state?.city ?? ''
+  form.value.state = auth.state?.state ?? ''
+  form.value.postalCode = auth.state?.poBox ?? ''
+  form.value.country = auth.state?.country ?? ''
+  form.value.nationality = auth.state?.nationality ?? ''
+}
 </script>
 
 <template>
   <div>
     <gadget-banner>
       <div class="grid grid-cols-[auto_1fr] h-full">
-        <div
-          class="grid justify-center ml-2 text-sm text-sidebar-text-primary lg:text-base"
-        >
-          <h3 class="ml-5 translate-y-8">Information personnelles</h3>
+        <div class="grid justify-center ml-2 text-sm text-white lg:text-base">
+          <h3 class="ml-5 translate-y-8">
+            {{ $t('page.profile.infos.title') }}
+          </h3>
         </div>
 
         <div class="flex justify-end">
           <gadget-image-blur>
             <img
-              :src="assetStore.list.profile"
+              src="/images/profile.png"
               class="z-30 object-cover object-center w-auto h-22"
               alt="Bank Logo"
             />
@@ -54,9 +71,23 @@ const kycLabel = computed(() => (form.value.kyc ? 'Active' : 'Inactive'))
     </gadget-banner>
 
     <section class="mt-5 space-y-5">
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-3 gap-3">
         <div>
-          <label class="text-xs text-input-profile-label">First name</label>
+          <label class="text-xs text-text-secondary">
+            {{ $t('page.profile.infos.id_code') }}
+          </label>
+
+          <input-bg-transparent
+            identifier="idCode"
+            v-model="form.idCode"
+            disabled
+          />
+        </div>
+
+        <div>
+          <label class="text-xs text-text-secondary">
+            {{ $t('page.profile.infos.first_name') }}
+          </label>
 
           <input-bg-transparent
             identifier="firstName"
@@ -66,7 +97,9 @@ const kycLabel = computed(() => (form.value.kyc ? 'Active' : 'Inactive'))
         </div>
 
         <div>
-          <label class="text-xs text-input-profile-label">Last name</label>
+          <label class="text-xs text-text-secondary">
+            {{ $t('page.profile.infos.last_name') }}
+          </label>
 
           <input-bg-transparent
             identifier="lastName"
@@ -76,7 +109,9 @@ const kycLabel = computed(() => (form.value.kyc ? 'Active' : 'Inactive'))
         </div>
 
         <div>
-          <label class="text-xs text-input-profile-label">Email</label>
+          <label class="text-xs text-text-secondary">
+            {{ $t('page.profile.infos.email') }}
+          </label>
 
           <input-bg-transparent
             identifier="email"
@@ -86,7 +121,9 @@ const kycLabel = computed(() => (form.value.kyc ? 'Active' : 'Inactive'))
         </div>
 
         <div>
-          <label class="text-xs text-input-profile-label">Phone</label>
+          <label class="text-xs text-text-secondary">
+            {{ $t('page.profile.infos.phone') }}
+          </label>
 
           <input-bg-transparent
             identifier="phone"
@@ -95,8 +132,10 @@ const kycLabel = computed(() => (form.value.kyc ? 'Active' : 'Inactive'))
           />
         </div>
 
-        <div class="col-span-2">
-          <label class="text-xs text-input-profile-label">Support</label>
+        <div>
+          <label class="text-xs text-text-secondary">
+            {{ $t('page.profile.infos.support') }}
+          </label>
 
           <input-bg-transparent
             identifier="support"
@@ -105,8 +144,10 @@ const kycLabel = computed(() => (form.value.kyc ? 'Active' : 'Inactive'))
           />
         </div>
 
-        <div class="col-span-2">
-          <label class="text-xs text-input-profile-label">Agency</label>
+        <div>
+          <label class="text-xs text-text-secondary">
+            {{ $t('page.profile.infos.agency') }}
+          </label>
 
           <input-bg-transparent
             identifier="agency"
@@ -114,23 +155,105 @@ const kycLabel = computed(() => (form.value.kyc ? 'Active' : 'Inactive'))
             disabled
           />
         </div>
+
+        <div>
+          <label class="text-xs text-text-secondary">
+            {{ $t('page.profile.infos.address1') }}
+          </label>
+
+          <input-bg-transparent
+            identifier="line1"
+            v-model="form.line1"
+            disabled
+          />
+        </div>
+
+        <div>
+          <label class="text-xs text-text-secondary">
+            {{ $t('page.profile.infos.address2') }}
+          </label>
+
+          <input-bg-transparent
+            identifier="line2"
+            v-model="form.line2"
+            disabled
+          />
+        </div>
+
+        <div>
+          <label class="text-xs text-text-secondary">
+            {{ $t('page.profile.infos.city') }}
+          </label>
+
+          <input-bg-transparent
+            identifier="city"
+            v-model="form.city"
+            disabled
+          />
+        </div>
+
+        <div>
+          <label class="text-xs text-text-secondary">
+            {{ $t('page.profile.infos.state') }}
+          </label>
+
+          <input-bg-transparent
+            identifier="state"
+            v-model="form.state"
+            disabled
+          />
+        </div>
+
+        <div>
+          <label class="text-xs text-text-secondary">
+            {{ $t('page.profile.infos.postal') }}
+          </label>
+
+          <input-bg-transparent
+            identifier="postalCode"
+            v-model="form.postalCode"
+            disabled
+          />
+        </div>
+
+        <div>
+          <label class="text-xs text-text-secondary">
+            {{ $t('page.profile.infos.country') }}
+          </label>
+
+          <input-bg-transparent
+            identifier="country"
+            v-model="form.country"
+            disabled
+          />
+        </div>
+
+        <div>
+          <label class="text-xs text-text-secondary">
+            {{ $t('page.profile.infos.nationality') }}
+          </label>
+
+          <input-bg-transparent
+            identifier="nationality"
+            v-model="form.nationality"
+            disabled
+          />
+        </div>
       </div>
 
-      <p class="space-x-2 text-sm text-input-profile-label">
-        <span>Kyc status:</span>
+      <p class="space-x-2 text-sm text-text-secondary">
+        <span> {{ $t('page.profile.infos.kyc_status') }}:</span>
 
-        <button-badge :label="kycLabel" />
+        <badge-success :label="kycLabel" />
       </p>
 
       <p class="flex items-center space-x-1 text-xs">
         <svg-radioactive />
 
         <span>
-          To modifier your personal information, contact support ou your agency
+          {{ $t('page.profile.infos.information') }}
         </span>
       </p>
     </section>
   </div>
 </template>
-
-<style scoped></style>

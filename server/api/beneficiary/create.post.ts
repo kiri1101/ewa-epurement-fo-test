@@ -24,7 +24,7 @@ type Response = {
 
 export default defineEventHandler(
   async (
-    event: H3Event
+    event: H3Event,
   ): Promise<{
     validError: ZodErrorMap[] | null
     apiResponse: {
@@ -48,9 +48,23 @@ export default defineEventHandler(
         .min(Number(config.private.validation.zod.min), {
           message: String(t.min).replaceAll(
             ':value',
-            String(config.private.validation.zod.min)
+            String(config.private.validation.zod.min),
           ),
         }),
+      email:
+        reqBody.email.trim().length > 0
+          ? z.email({
+              error: () => ({ message: t.email }),
+            })
+          : z.string({
+              error: () => ({ message: t.required }),
+            }),
+      phoneNumber: z.string({
+        error: () => ({ message: t.required }),
+      }),
+      phoneNumber_code: z.string({
+        error: () => ({ message: t.required }),
+      }),
       country: z
         .string({
           error: () => ({ message: t.required }),
@@ -58,98 +72,121 @@ export default defineEventHandler(
         .min(Number(config.private.validation.zod.min), {
           message: String(t.min).replaceAll(
             ':value',
-            String(config.private.validation.zod.min)
+            String(config.private.validation.zod.min),
           ),
         }),
-      type: z.literal(['individual', 'company'], {
+      benefType: z.literal(['PHYSIQUE', 'MORALE'], {
         error: () => ({ message: t.invalidType }),
       }),
-      bank: z
+      bankName: z
         .string({
           error: () => ({ message: t.required }),
         })
         .min(Number(config.private.validation.zod.min), {
           message: String(t.min).replaceAll(
             ':value',
-            String(config.private.validation.zod.min)
+            String(config.private.validation.zod.min),
           ),
         }),
       iban: z
         .string({
           error: () => ({ message: t.required }),
         })
-        .min(Number(config.private.validation.zod.min), {
+        .min(Number(config.private.validation.zod.iban.min), {
           message: String(t.min).replaceAll(
             ':value',
-            String(config.private.validation.zod.min)
+            String(config.private.validation.zod.iban.min),
           ),
         }),
-      swift: z
-        .string({
-          error: () => ({ message: t.required }),
-        })
-        .min(Number(config.private.validation.zod.min), {
-          message: String(t.min).replaceAll(
-            ':value',
-            String(config.private.validation.zod.min)
-          ),
-        }),
+      swiftBic: z.string({
+        error: () => ({ message: t.required }),
+      }),
       files: z
         .record(
           z
             .string({
-              error: () => ({ message: t.required }),
+              error: () => ({ message: t.files_required }),
             })
             .min(Number(config.private.validation.zod.min), {
               message: String(t.min).replaceAll(
                 ':value',
-                String(config.private.validation.zod.min)
+                String(config.private.validation.zod.min),
               ),
             }),
           z
             .string({
-              error: () => ({ message: t.required }),
+              error: () => ({ message: t.files_required }),
             })
             .min(Number(config.private.validation.zod.min), {
               message: String(t.min).replaceAll(
                 ':value',
-                String(config.private.validation.zod.min)
+                String(config.private.validation.zod.min),
               ),
             }),
           {
-            error: () => ({ message: t.required }),
-          }
+            error: () => ({ message: t.files_required }),
+          },
         )
         .refine(value => Object.values(value).length > 0, {
-          message: t.required,
+          message: t.files_required,
         }),
       lang: z.literal(['en', 'fr'], {
         error: () => ({ message: t.invalidLang }),
+      }),
+      codeIdentify: z.string({
+        error: () => ({ message: t.required }),
+      }),
+      address1: z.string({
+        error: () => ({ message: t.required }),
+      }),
+      address2: z.string({
+        error: () => ({ message: t.required }),
+      }),
+      town: z.string({
+        error: () => ({ message: t.required }),
+      }),
+      region: z.string({
+        error: () => ({ message: t.required }),
+      }),
+      postalCode: z.string({
+        error: () => ({ message: t.required }),
+      }),
+      nationality: z.string({
+        error: () => ({ message: t.required }),
       }),
     })
 
     const api = fetch(event)
 
     const payload = await readValidatedBody(event, body =>
-      loginSchema.safeParse(body)
+      loginSchema.safeParse(body),
     )
 
     const response: Response | null = payload.success
       ? ((await api(config.private.api.beneficiary.create, {
           method: 'POST',
           body: {
-            benefType:
-              payload.data.type === 'individual' ? 'physique' : 'morale',
+            benefType: payload.data.benefType.toLowerCase(),
             fullName: payload.data.fullName,
             country: payload.data.country,
-            bankName: payload.data.bank,
-            swiftBic: payload.data.swift,
-            iban: payload.data.iban,
+            bankName: payload.data.bankName,
+            swiftBic: payload.data.swiftBic.trim(),
+            iban: payload.data.iban.trim().replaceAll(' ', ''),
+            address1: payload.data.address1,
+            address2: payload.data.address2,
+            codeIdentify: payload.data.codeIdentify,
+            postalCode: payload.data.postalCode,
+            town: payload.data.town,
+            region: payload.data.region,
+            nationality: payload.data.nationality,
             uploadedFiles: Object.values(payload.data.files),
+            email: payload.data.email,
+            phoneNumber: payload.data.phoneNumber,
+            phoneCode: payload.data.phoneNumber_code,
             lang: payload.data.lang.toUpperCase(),
             origin: config.private.origin.toUpperCase(),
           },
-        }).catch(error => {
+        }).catch(() => {
           throw createError({
             statusCode: 500,
             statusText: t.server_api_failed,
@@ -177,5 +214,5 @@ export default defineEventHandler(
       validError: payload.error ? errorMap(payload.error.issues) : null,
       apiResponse: output,
     }
-  }
+  },
 )

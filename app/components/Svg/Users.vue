@@ -10,10 +10,10 @@ const { active = false } = defineProps<{
     height="22"
     viewBox="0 0 22 22"
     :class="[
-      'fill-profile-svg stroke-profile-svg group-hover:stroke-sidebar-svg',
+      'fill-primary-light stroke-primary-light group-hover:stroke-white',
       {
-        'fill-sidebar-svg stroke-sidebar-svg': active,
-        'fill-profile-svg stroke-profile-svg': !active,
+        'fill-white stroke-white': active,
+        'fill-primary-light stroke-primary-light': !active,
       },
     ]"
     xmlns="http://www.w3.org/2000/svg"

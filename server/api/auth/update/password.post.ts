@@ -63,7 +63,7 @@ export default defineEventHandler(async (event: H3Event) => {
           lang: payload.data.lang.toUpperCase(),
           origin: config.private.origin.toUpperCase(),
         },
-      }).catch(error => {
+      }).catch(() => {
         throw createError({
           statusCode: 500,
           statusText: t.server_api_failed,
@@ -74,7 +74,7 @@ export default defineEventHandler(async (event: H3Event) => {
   if (response) {
     if (String(response?.pesake.code).length > 0) {
       throw createError({
-        statusCode: 500,
+        statusCode: Number(response?.pesake.code),
         statusText: response?.pesake.details.pesakeDetail,
       })
     }

@@ -12,6 +12,20 @@ export default defineNuxtPlugin(nuxtApp => {
         'Content-Type': 'application/json',
       },
       timeout: Number(config.public.app.apiTimeout) ?? 10000,
+      onRequest() {
+        const authStoreRef = useCookie<{ state: AuthData }>('authUser')
+
+        if (!authStoreRef.value) {
+          navigateTo(config.public.page.login)
+        }
+      },
+      onResponse() {
+        const authStoreRef = useCookie<{ state: AuthData }>('authUser')
+
+        if (!authStoreRef.value) {
+          navigateTo(config.public.page.login)
+        }
+      },
     })
   )
 })

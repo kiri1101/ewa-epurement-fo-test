@@ -1,1 +1,0 @@
-import{Z as u,$ as n,x as o,s as r,a0 as l}from"./CnwOumKi.js";const p=u(async(s,c)=>{let a,i;const e=r(),t=n("authUser");if(!t.value)return o(e.public.page.login);if(s.name==="dashboard"&&t.value&&t.value.state.firstAttempt)return[a,i]=l(()=>$fetch(e.public.api.logout,{baseURL:e.public.baseUrl,method:"POST"})),await a,i(),o(e.public.page.login)});export{p as default};

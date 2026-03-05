@@ -9,12 +9,6 @@ export type ZodValidationError = {
   message: string
 }
 
-export type PwdResetForm = {
-  otp: string
-  secret: string
-  secret_confirm: string
-}
-
 export interface User {
   email: string
   firstName: string
@@ -25,6 +19,27 @@ export interface User {
   roles: string[]
   status: number
   userPseudo: string
+  registerDeCommerce: string | null
+  addresse1: string | null
+  address2: string | null
+  codePostale: string | null
+  town: string | null
+  region: string | null
+  country: string | null
+  nationality: string | null
+  resisdent: number
+}
+
+export type ExchangeRate = {
+  initialCurrencyCode: string
+  finalCurrencyCode: string
+  exchangeValue: string
+  initialCurrencyLabel: string
+  initialCurrencySymbol: string
+  initialCurrencyDecimal: number
+  finalCurrencyLabel: string
+  finalCurrencySymbol: string
+  finalCurrencyDecimal: number
 }
 
 export type AuthToken = {
@@ -48,10 +63,12 @@ export interface BankAcc {
   clientName: string
   clientType: string
   uerSlug: string
+  bankCurrency: string
 }
 
 export interface AuthResponse {
   user: User
+  exchangeRate: ExchangeRate[]
   token: string
   refreshToken: string
   expired_at: number
@@ -76,8 +93,16 @@ export type ApiResponse = {
   data: AuthResponse
 }
 
+export type ResendOtpResponse = {
+  pesake: Pesake
+  data: {
+    otp: string
+  }
+}
+
 export type AuthData = {
   id: string
+  username: string
   firstName: string
   lastName: string
   firstAttempt: boolean
@@ -88,8 +113,16 @@ export type AuthData = {
     bearer: string
     refresh: string
   }
-  sessionId: string
   isValidator: boolean
+  regCommerce: string
+  address: string
+  address2: string
+  country: string
+  poBox: string
+  city: string
+  state: string
+  nationality: string
+  isResident: boolean
 }
 
 export type ZodErrorMap = {
@@ -129,6 +162,9 @@ export type CollaboratorList = {
   isActive: number
   createdDate: string
   bankinfo: {
+    accountType: string
+    bankName: string
+    bankBalance: number
     accountNumber: string
     roles: string[]
   }
@@ -156,6 +192,23 @@ export type UserCollaboratorForm = {
       bank: string
     }
   }
+}
+
+export type BeneficiaryData = {
+  uuid: string
+  code: string
+  type: string
+  fullName: string
+  country: string
+  email: string
+  phoneCode: string
+  phoneNumber: string
+  address: string
+  status: string
+  bankName: string
+  swiftBic: string
+  iban: string
+  createdAt: string
 }
 
 export type BeneficiarySettingFile = {
@@ -201,6 +254,14 @@ export interface CountryItem {
   value: string
 }
 
+export type BeneficiaryPjList = {
+  fileSlug: string
+  fileType: string
+  fileName: string
+  filePath: string
+  uploadedAt: string
+}
+
 export interface BeneficiaryResponse {
   benefSlug: string
   benefType: string
@@ -209,7 +270,7 @@ export interface BeneficiaryResponse {
   email: string
   phoneCode: string
   phoneNumber: string
-  address: string
+  address: string | null
   benefStatus: string
   createdAt: string
   updatedAt: string
@@ -219,6 +280,13 @@ export interface BeneficiaryResponse {
     swiftBic: string
     iban: string
   }
+  benefAddress1: string | null
+  benefAddress2: string | null
+  benefNationality: string | null
+  benefPostalCode: string | null
+  benefTown: string | null
+  benefRegion: string | null
+  pjList: BeneficiaryPjList[]
 }
 
 export type CustomInsertBeneficiary = {
@@ -244,19 +312,57 @@ export type TransferResponse = {
   amount: string
   submittedDate: string
   shouldVerifyDocument: number
+  canValidateRequest: number
+  canCompleteRequest: number
+  demandeCurrency: string
+  demandeDesc: string
+  scheduleDate: string | null
+  demandeSupport: string
+  demandeTypeName: string
+  demandeFilesUpload: TransferAttachmentResponse[]
 }
 
-export type TransferAttachmentResponse = {
+export type TransferTypeAttachmentResponse = {
   fileTypeSlug: string
   fileTypeCat: string
   fileTypeName: string
   isRequired: number
+  forApuration: number | null
+  forExecution: number | null
+}
+
+export type TransferAttachmentResponse = {
+  fileTypeLibc: string
+  originalName: string
+  dmdeBenfSlug: string
+  fileTypeCat: string
+  fileTypeSlug: string
+  isRequired: number
+  alreadyUploaded: number
+  isValid: number | null
+  canEditFile: number
+  shortLink: string | null
+  fileComment: string | null
+  apurmentComment: string | null
+}
+
+export type TransferTypeCategory = {
+  unikCode: string
+  longLabel: string
+}
+
+export type TransferType = {
+  requestCategory: string
+  check_conciliation_required_above_amount: number
+  conciliation_required_above_amount: number | null
+  demandeType: string
+  demandeTypeName: string
+  attachmentList: TransferTypeAttachmentResponse[]
 }
 
 export type TransferTypeResponse = {
-  demandeType: string
-  demandeTypeName: string
-  attachmentList: TransferAttachmentResponse[]
+  requestCategory: TransferTypeCategory[]
+  requestType: TransferType[]
 }
 
 export type TransferTypeFile = {
@@ -265,6 +371,8 @@ export type TransferTypeFile = {
   code: string
   category: string
   isRequired: boolean
+  forApuration: boolean
+  forExecution: boolean
 }
 
 export type TransferOtpResponse = {
@@ -275,4 +383,217 @@ export type TransferOtpResponse = {
 
 export type ValidateOtpResponse = {
   message: string
+}
+
+export type accountType = {
+  agency: string
+  iban: string
+  id: string
+  type: string
+  value: string
+}
+
+export type beneficiaryType = {
+  bankName: string
+  code: string
+  country: string
+  fullName: string
+  iban: string
+  status: string
+}
+
+export type NotifyContent = {
+  title: string
+  message: string
+}
+
+export type DomiciliationFile = {
+  natureOfImport: string
+  fileTypeSlug: string
+  fileTypeCat: string
+  fileTypeLibc: string
+  isRequired: number
+  alreadyUploaded: number
+  canEditFile: number
+  shortLink: string | null
+  isValid: number | null
+  fileComment: string | null
+  apurmentComment: string | null
+}
+
+export type DomiciliationFileResponse = {
+  pesake: Pesake
+  data: DomiciliationFile[]
+}
+
+export type DemandResponse = {
+  demandeSlug: string
+  message: string
+}
+
+export type Domiciliation = {
+  unikCode: string
+  referenceNumber: string
+  natureOfImport: string
+  natureOfImportLabel: string
+  clientFullName: string
+  clientRegistreCommerce: string
+  clientFullAdress: string
+  clientAmount: string
+  clientCurrency: string
+  domiciliationBalance: string
+  domiciliationOverdraftLimit: number
+  profession: string
+  immatriculation: string
+  supplierSlug: string
+  supplierFullName: string
+  supplierAmount: string
+  supplierCurrency: string
+  supplierFullAdress: string
+  supplierCountry: string
+  goodsCommercialLabel: string
+  goodsServiceLabel: string
+  goodsChapitre: string
+  goodsDouaneName: string
+  createAt: string
+  workFlowUniqueCode: string
+  domiciliationStatus: string
+  declarationImportation: string
+}
+
+export interface DomiciliationResponse {
+  pesake: Pesake
+  data: Domiciliation[]
+}
+
+export type AccountModel = {
+  uuid: string
+  iBan: string
+  bank: string
+  accRef: string
+  accType: string
+  agency: string
+  balance: string
+  clientType: string
+  currency: string
+  client: string
+}
+
+export type EngagementLetter = {
+  fileSlug: string
+  fileName: string
+  filePath: string
+  downloadLink: string
+}
+
+export type DomiciliationDetailFile = {
+  fileTypeLibc: string
+  fileTypeLiba: string
+  createdAt: string
+  shortLink: string | null
+  alreadyUploaded: number
+  canEditFile: number
+}
+
+export type DomiciliationDetailReqHistory = {
+  nodeLabel: string
+  createAt: string
+  roleLabel: string
+}
+
+export type DomiciliationDetailInfos = {
+  supplierFullName: string
+  supplierFullAdress: string
+  supplierCountry: string
+  supplierCurrency: string
+  goodsCommercialLabel: string
+  quantity: string
+  bureauEmbarquement: string
+  fobValue: number | null
+  echeanceDePaiement: string
+  referenceNumber: string
+  cafValue: number | null
+  goodsDouaneName: string
+  goodsChapitre: string
+  goodsServiceLabel: string
+  supplierAmount: string
+  customInfos: string
+  natureOfImport: string
+}
+
+export type DomiciliationDetails = {
+  domiciliationInfo: DomiciliationDetailInfos
+  requestHistry: DomiciliationDetailReqHistory[]
+  detailUpload: DomiciliationDetailFile[]
+  allDemand: any[]
+}
+
+export type DomiciliationDetailsResponse = {
+  pesake: Pesake
+  data: DomiciliationDetails
+}
+
+export type CurrencyResponse = {
+  currencyCode: string
+  currencyLable: string
+  currencySymbol: string
+  nombreDecimals: number
+}
+
+export type RateResponse = {
+  rateSlug: string
+  initialCurrencyCode: string
+  finalCurrencyCode: string
+  exchangeValue: string
+  initialCurrencyLabel: string
+  initialCurrencySymbol: string
+  initialCurrencyDecimal: number
+  finalCurrencyLabel: string
+  finalCurrencySymbol: string
+  finalCurrencyDecimal: number
+  validateEndDate: string
+}
+
+export type BuildFormDisposition = {
+  extraSmall: number
+  small: number
+  medium: number
+  large: number
+  extraLarge: number
+}
+
+export type BuildFormField = {
+  fieldCode: string
+  fieldKey: string | null
+  fieldLibc_lang01: string
+  fieldLibc_lang02: string
+  fieldLibc_lang03: string
+  defaultValue: string
+  fieldCate: string
+  isLiveSearch: number
+  listValue: any[]
+  fieldType: string
+  readOnly: number
+  required: number
+  isUnik: number
+  limitMax: number
+  helpMessage: string | null
+  fieldDisposition: BuildFormDisposition
+}
+
+export type BuildFormSection = {
+  sectCode: string
+  sectLiba_lang01: string
+  sectLiba_lang02: string
+  sectLiba_lang03: string
+  sectPosition: number
+  sectClass: string
+  fields: BuildFormField[]
+}
+
+export type BuildFormResponse = {
+  apShortLabel_lang01: string
+  apShortLabel_lang02: string
+  apShortLabel_lang03: string
+  formSectionList: BuildFormSection[]
 }

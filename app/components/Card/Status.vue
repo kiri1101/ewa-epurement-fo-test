@@ -13,29 +13,31 @@ const setLabel = () => {
   switch (status) {
     case 'active':
       output = t('page.beneficiary.status.active')
-      break;
+      break
     case 'block':
       output = t('page.beneficiary.status.block')
-      break;
+      break
     case 'archive':
       output = t('page.beneficiary.status.archive')
-      break;
+      break
 
     default:
       output = ''
-      break;
+      break
   }
   label.value = output
 }
 </script>
 
 <template>
-  <span :class="[
-    'font-semibold px-5 py-1 rounded-full text-[0.6rem]',
-    { 'bg-stat-total-demand text-sidebar-text-active': status === 'active' },
-    { 'bg-red-beneficiary-status text-red-beneficiary-status-text': status === 'block' },
-    { 'bg-gray-beneficiary-status gray-beneficiary-status-text': status === 'archive' }
-  ]">
+  <span
+    :class="[
+      'font-semibold px-5 py-1 rounded-full text-[0.6rem]',
+      { 'bg-bg-secondary text-status-success': status === 'active' },
+      { 'bg-bg-secondary text-status-error': status === 'block' },
+      { 'bg-bg-secondary text-status-neutral': status === 'archive' },
+    ]"
+  >
     {{ label }}
   </span>
 </template>

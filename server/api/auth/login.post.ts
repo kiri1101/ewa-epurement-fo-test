@@ -6,10 +6,13 @@ import type { H3Event } from 'h3'
 
 export default defineEventHandler(
   async (
-    event: H3Event
+    event: H3Event,
   ): Promise<{
     validError: ZodErrorMap[] | null
-    apiResponse: AuthData | null
+    apiResponse: {
+      user: AuthData
+      accounts: AccountModel[]
+    } | null
   }> => {
     const config = useRuntimeConfig(event)
     const reqBody = await readBody(event)
@@ -25,7 +28,7 @@ export default defineEventHandler(
         .min(Number(config.private.validation.zod.min), {
           message: String(t.min).replaceAll(
             ':value',
-            String(config.private.validation.zod.min)
+            String(config.private.validation.zod.min),
           ),
         }),
       secret: z
@@ -35,7 +38,7 @@ export default defineEventHandler(
         .min(Number(config.private.validation.zod.min), {
           message: String(t.min).replaceAll(
             ':value',
-            String(config.private.validation.zod.min)
+            String(config.private.validation.zod.min),
           ),
         }),
       lang: z.literal(['en', 'fr'], {
@@ -46,7 +49,7 @@ export default defineEventHandler(
     const api = fetch(event)
 
     const payload = await readValidatedBody(event, body =>
-      loginSchema.safeParse(body)
+      loginSchema.safeParse(body),
     )
 
     const response: ApiResponse | null = payload.success
@@ -58,7 +61,7 @@ export default defineEventHandler(
             lang: payload.data.lang.toUpperCase(),
             origin: config.private.origin.toUpperCase(),
           },
-        }).catch(error => {
+        }).catch(() => {
           throw createError({
             statusCode: 500,
             statusText: t.server_api_failed,
@@ -73,7 +76,46 @@ export default defineEventHandler(
           statusText: response?.pesake.details.pesakeDetail,
         })
       } else {
-        output = await saveUser(response?.data)
+        output = {
+          user: {
+            id: crypto.randomUUID(),
+            username: response?.data.user.userPseudo,
+            firstName: response?.data.user.firstName,
+            lastName: response?.data.user.lastName,
+            firstAttempt: Boolean(response?.data.is_first_login),
+            emailAddress: response?.data.user.email,
+            phoneNumber: `(${response?.data.user.phoneCode}) ${response?.data.user.phoneNumber}`,
+            kycStatus: Boolean(response?.data.user.kycStatus),
+            token: {
+              bearer: response?.data.token,
+              refresh: response?.data.refreshToken,
+            },
+            isValidator: response?.data.user.roles.includes('Validation')
+              ? true
+              : false,
+            regCommerce: response?.data.user.registerDeCommerce ?? '',
+            address: response?.data.user.addresse1 ?? '',
+            address2: response?.data.user.address2 ?? '',
+            country: response?.data.user.country ?? '',
+            poBox: response?.data.user.codePostale ?? '',
+            city: response?.data.user.town ?? '',
+            state: response?.data.user.region ?? '',
+            nationality: response?.data.user.nationality ?? '',
+            isResident: Boolean(response?.data.user.resisdent),
+          },
+          accounts: (response?.data.bankAccounts ?? []).map((acc: BankAcc) => ({
+            uuid: crypto.randomUUID(),
+            iBan: acc.bankIBAN,
+            bank: acc.bankName,
+            accRef: acc.acctSlug,
+            accType: acc.acctType,
+            agency: acc.agenName,
+            balance: String(acc.amt),
+            clientType: acc.clientType,
+            currency: acc.bankCurrency,
+            client: acc.clientName,
+          })),
+        }
       }
     }
 
@@ -81,5 +123,5 @@ export default defineEventHandler(
       validError: payload.error ? errorMap(payload.error.issues) : null,
       apiResponse: output,
     }
-  }
+  },
 )

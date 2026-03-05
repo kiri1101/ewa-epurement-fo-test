@@ -11,7 +11,7 @@ const availableLocales = computed(() => {
 })
 
 const chosenLocale = computed(() =>
-  locales.value.find(i => i.code === locale.value)
+  locales.value.find(i => i.code === locale.value),
 )
 
 const toggle = (event: any) => translate.value.toggle(event)
@@ -23,7 +23,7 @@ const switchLang = (locale: 'en' | 'fr') => setLocale(locale)
   <div>
     <button
       type="button"
-      class="text-sm border px-3 py-1 rounded bg-translate text-translate-text border-translate-border cursor-pointer hover:shadow shadow-gray-300 transition duration-200 ease-linear flex items-center gap-1.5"
+      class="text-sm border px-3 py-1 rounded bg-bg-main text-text-primary border-border-main cursor-pointer hover:shadow shadow-gray-300 transition duration-200 ease-linear flex items-center gap-1.5"
       @click.prevent="toggle"
     >
       <span>{{ chosenLocale?.name }}</span>
@@ -36,7 +36,7 @@ const switchLang = (locale: 'en' | 'fr') => setLocale(locale)
         <li
           v-for="locale in availableLocales"
           :key="locale.code"
-          class="grow w-full rounded hover:bg-link-hover hover:text-translate-text-hover px-3 py-1 cursor-pointer"
+          class="grow w-full rounded hover:bg-accent hover:text-white px-3 py-1 cursor-pointer"
           @click.prevent="switchLang(locale.code)"
         >
           {{ locale.name }}

@@ -1,39 +1,35 @@
-import type { PwdResetForm } from '~~/shared/utils/model'
-
 export const useResetPwdFormStore = defineStore(
   'reset.pwd.form',
   () => {
-    const form = ref<PwdResetForm>({
-      otp: '',
-      secret: '',
-      secret_confirm: '',
-    })
+    const otp = shallowRef<string>('')
 
-    const updateFormField = (
-      key: keyof PwdResetForm,
-      value: string | undefined
-    ) => {
-      if (value) {
-        form.value[key] = value
-      }
-    }
+    const canResendOtp = shallowRef<boolean>(false)
 
-    const reset = () =>
-      (form.value = {
-        otp: '',
-        secret: '',
-        secret_confirm: '',
-      })
+    const updateOtp = (value: string) => (otp.value = value)
+
+    const showResendOtpBtn = () => (canResendOtp.value = true)
+
+    const hideResendOtpBtn = () => (canResendOtp.value = false)
+
+    const reset = () => (otp.value = '')
+
+    const canResendOtpSnapshot = computed(() => canResendOtp.value)
+
+    const otpSnapshot = computed(() => otp.value)
 
     return {
-      form,
-      updateFormField,
+      otpSnapshot,
+      updateOtp,
       reset,
+      canResendOtpSnapshot,
+      showResendOtpBtn,
+      hideResendOtpBtn,
     }
   },
   {
     persist: {
       storage: piniaPluginPersistedstate.localStorage(),
+      key: 'reset.pwd.form',
     },
-  }
+  },
 )

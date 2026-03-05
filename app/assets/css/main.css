@@ -1,189 +1,62 @@
 @import "tailwindcss";
+@import "primeicons/primeicons.css";
 @import './font.css';
+@import './nfc/theme.css';
 
-@theme {
-  /*** Montserrat font loaded locally ***/
-  --font-montserrat: 'Montserrat', sans-serif;
+@source inline("{col-span,sm:col-span,md:col-span,lg:col-span,xl:col-span}-{1,2,3,4,5,6,7,8,9,10,11,12}");
 
+.p-paginator-page.p-paginator-page-selected {
+  background: var(--color-accent-muted) !important;
+  color: var(--color-accent-dark) !important;
+}
 
-  /*** App global color ***/
-  --color-app: #fff;
-  /*app global background color*/
-  --color-link-decoration: #fff;
-  /*app global link decoration color*/
-  --color-link: #fff;
-  /*app global text link color*/
-  --color-link-hover-decoration: #00741D;
-  /*app global link decoration color*/
-  --color-link-hover: #00741D;
-  /*app global text link color*/
-  --color-validation-error: #D91414;
-  /*toast validation error color*/
-  --color-page-title-text: #001051;
+.p-paginator-page:not(.p-paginator-page-selected):hover {
+  background: var(--color-bg-secondary) !important;
+  color: var(--color-text-primary) !important;
+}
 
+.p-select-option.p-select-option-selected {
+  background: var(--color-accent-muted) !important;
+  color: var(--color-accent-dark) !important;
+}
 
-  /*** Authentication page color code ***/
-  --color-auth-page: #001051;
-  /*auth page background color*/
-  --color-auth-text-primary: #fff;
-  /*auth page text primary color*/
-  --color-auth-text-secondary: #00741D;
-  /*auth page text secondary color*/
-  --color-auth-navbar: #fff;
-  /*auth layout navbar background color*/
-  --color-auth-navbar-border: #00741D;
-  /*auth layout navbar border color*/
-  --color-auth-form-border: #7FB98E;
-  /*sign in form border color*/
-  --color-auth-form-title-decoration: #00741D;
-  /*sign in form title decoration color*/
-  --color-auth-form-pwd-eye: #D91414;
-  /*sign in form password input svg color*/
-  --color-auth-form-button: #00741D;
-  /*sign in form button color*/
-  --color-auth-form-button-label: #fff;
-  /*sign in form button label color*/
-  --color-auth-navbar-logo: #fff;
-  /*auth layout navbar logo background color*/
-  --color-auth-effect: #93c5fd;
-  /*auth layout page effect color*/
-  --color-auth-countdown: #D91414;
-  /*auth layout countdown color*/
+.p-select-option.p-select-option-selected:hover {
+  background: var(--color-bg-secondary) !important;
+  color: var(--color-text-primary) !important;
+}
 
+.p-paginator-page,
+.p-paginator-next,
+.p-paginator-last,
+.p-paginator-first,
+.p-paginator-prev {
+  &:hover {
+    background: var(--color-bg-secondary) !important;
+    color: var(--color-text-primary) !important;
+  }
+}
 
-  /*** Translate button color code ***/
-  --color-translate: #fff;
-  /*translate button color*/
-  --color-translate-border: #B7B7B7;
-  /*translate button border color*/
-  --color-translate-text: #000;
-  /*translate button text color*/
-  --color-translate-text-hover: #fff;
-  /*translate button text color on hover*/ 
+.p-datepicker-day-selected {
+  background: var(--color-accent) !important;
+  color: var(--color-white) !important;
+}
 
+.p-datepicker-day-today {
+  background: var(--color-accent-muted) !important;
+}
 
-  /*** Input component color code ***/
-  --color-input-placeholder: #777978;
-  /*input placeholder color*/
-  --color-input: #ffffff0d;
-  /*input background color*/
-  --color-input-focus: #ffffff;
-  /*input focus background color*/
-  --color-input-border: #0d0d0d33;
-  /*input border color*/
-  --color-input-border-focus: #ffffff;
-  /*input focus border color*/
-  --color-input-text: #ffffff;
-  /*input text color*/
-  --color-input-focus-text: #000000;
-  /*input focus text color*/
-  --color-input-focus-ring: #ffffff53;
-  /*input focus ring color*/
-  --color-input-pwd-svg: #94a3b8;
-  /*input password svg color*/
-  --color-input-profile-label: #797171;
-  /*User profile input label color*/
-  --color-input-disabled: #F4F4F4;
-  /*input disabled background color*/
-  --color-input-disabled-text: #0D0D0D;
-  /*input disabled text color*/
+.p-toggleswitch.p-toggleswitch-checked .p-toggleswitch-slider {
+  background: var(--color-accent) !important;
+}
 
+.p-textarea {
+  border-color: var(--color-border-secondary) !important;
+}
 
-  /*** Button component color code ***/
-  --color-button-main: #00741D;
-  /*main button background color*/
-  --color-button-main-hover: #005a17;
-  /*main button hover background color*/
-  --color-button-outline-hover: #dcfce7;
-  /*main button hover background color*/
-  --color-button-main-border: #00741D;
-  /*main button border color*/
-  --color-button-main-hover-border: #ffffff55;
-  /*main button hover border color*/
-  --color-button-main-label: #ffffff;
-  /*main button label color*/
-  --color-button-main-hover-label: #ffffff;
-  /*main button hover label color*/
-  --color-button-outline-label: #00741D;
-  /*main button label color*/
-  --color-button-outline-hover-label: #005a17;
-  /*main button hover label color*/
-  --color-button-dashboard-profile: #001051;
-  /*dashboard nav profile button background color*/
-  --color-button-green: #e3f9ea;
-  /*badge background success color*/
-  --color-button-red: #d91414;
-  /*badge background danger color*/
-  --color-button-red-hover: #d9141480;
-  /*badge background danger hover color*/
-  --color-button-cream-white: #ffffff63;
+.p-textarea.p-variant-filled {
+  background: var(--color-bg-main) !important;
+}
 
-
-  /*** Dashboard layout color code ***/
-  --color-sidebar-menu: #001051;
-  /*main sidebar background color*/
-  --color-sidebar-text-primary: #fff;
-  /*sidebar text color*/
-  --color-sidebar-text-active: #00741D;
-  /*sidebar text active color*/
-  --color-sidebar-logo-border: #fff;
-  /*sidebar logo box border color*/
-  --color-sidebar-svg: #fff;
-  /*sidebar menu icon color*/
-  --color-sidebar-svg-hover: #00741D;
-  /*sidebar menu icon hover color*/
-  --color-dashboard-nav: #000;
-  /*dashboard nav background color*/
-  --color-stat-total-demand: #ddf8e5;
-  /*total demand stat background color*/
-  --color-stat-pending-demand: #edf0ff;
-  /*pending demand stat background color*/
-  --color-stat-closed-demand: #f7f9c2;
-  /*closed demand stat background color*/
-  --color-stat-required-action: #e3e4e3;
-  /*required action stat background color*/
-
-
-  /**Border color**/
-  --color-border-black: #000;
-  --color-border-dark: #00000036;
-  --color-border-green: #00741D;
-  --color-border-brown: #b2b2b2;
-  --color-border-dark-brown: #797171;
-  --color-border-focus-brown: #79717133;
-  --color-border-dark-blue: #001051;
-  --color-border-light-brown: #e2e2e2;
-
-
-  /**Profile layout color code**/
-  --color-profile: #f2f4ff;
-  /*profile image default background color*/
-  --color-profile-svg: #797171;
-  /*profile svg background color*/
-  --color-profile-svg-hover: #fff;
-  /*profile svg hover background color*/
-  --color-sidebar: #f3f2f2;
-  /*profile sidebar menu hover background color*/
-  --color-sidebar-hover: #00741d;
-  /*profile menu hover color*/
-  --color-profile-manager: #f2f4ff;
-  --color-account-manager-block: #f3f3f3;
-
-  /**Beneficiary page color collection**/
-  --color-red-beneficiary-status: #ff9395;
-  /*beneficiary blocked status badge background color*/
-  --color-red-beneficiary-status-text: #d91414;
-  /*beneficiary blocked status badge text color*/
-  --color-gray-beneficiary-status: #d3cdcd;
-  /*beneficiary archieved status badge background color*/
-  --color-gray-beneficiary-status-text: #797171;
-  /*beneficiary archieved status badge text color*/
-
-  /**Card graident color collection**/
-  --color-card-from: #f2f4ff;
-  /*card gradient from color*/
-  --color-card-to: #c8d2fd;
-  /*card gradient to color*/
-  --color-card-border: #797171;
-  /*card gradient border color*/
+.p-datatable-header-cell {
+  background: var(--color-bg-secondary) !important;
 }

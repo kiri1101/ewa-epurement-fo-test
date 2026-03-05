@@ -21,6 +21,10 @@ export const fetch = (event: H3Event) => {
         )
       }
     },
-    onResponseError: async ({ response }) => {},
+    onResponse: async ({ response }) => {
+      if (authUser && String(response._data.pesake?.code) === '50101') {
+        auth.clear()
+      }
+    },
   })
 }

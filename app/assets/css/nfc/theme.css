@@ -1,0 +1,64 @@
+@import './../default.css';
+
+@theme {
+  /*** Montserrat font loaded locally ***/
+  --font-montserrat: 'Montserrat', sans-serif;
+  --text-xxs: 0.65rem;
+
+  --color-loading-indicator: #c0392b;
+  /*Page loading indicator color*/
+
+  --color-primary: #2d2d2d;
+  /*Main brand color (sidebar, bold text)*/
+  --color-primary-light: #444444;
+  /*Light variant of the main color*/
+  --color-primary-dark: #1a1a1a;
+  /*Dark variant of the main color*/
+  --color-accent: #c0392b;
+  /*Action color: CTA buttons, active links*/
+  --color-accent-light: #e74c3c;
+  /*Light variant of the action color (hover state)*/
+  --color-accent-dark: #96281b;
+  /*Dark variant of the action color (pressed state)*/
+  --color-accent-muted: #fdecea;
+  /*Accent-colored background (badges, highlights)*/
+  --color-sidebar-bg: #2d2d2d;
+  /*Sidebar background color*/
+  --color-hero-bg: #2d2d2d;
+  /*Hero background color*/
+  --color-text-primary: #2d2d2d;
+  /*Primary text color*/
+  --color-text-secondary: #6b6b6b;
+  /*Secondary text color*/
+  --color-text-muted: #9ca3af;
+  /*Text disabled / placeholder*/
+  --color-border-main: #e0e0e0;
+  /*Border and separator colors*/
+  --color-ring-focus: #ffffff53;
+  /*Ring focus color*/
+  --color-bg-main: #fff;
+  /*Main background (white)*/
+  --color-bg-secondary: #f7f7f7;
+  /*Secondary background (pages,  gray areas)*/
+  --color-sidebar-active-bg: #fff;
+  /*Background of the active item in the sidebar*/
+  --color-sidebar-active-text: #c0392b;
+  /*Text color of the active item in the sidebar*/
+
+  --color-status-error: #ef4444;
+  /*Error status color*/
+  --color-status-success: #22c55e;
+  /*Success status color*/
+  --color-status-warning: #eab308;
+  /*Warning status color*/
+  --color-status-info: #14b8a6;
+  /*Info status color*/
+  --color-status-neutral: #9ca3af;
+  /*Neutrak status color*/
+  --color-status-default: #6b7280;
+  /*Default status color*/
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+}

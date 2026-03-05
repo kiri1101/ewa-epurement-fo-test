@@ -6,7 +6,7 @@ defineProps<{
 
 <template>
   <p
-    class="text-xs font-semibold transition duration-200 ease-linear text-validation-error leading-3.5"
+    class="text-xs font-semibold transition duration-200 ease-linear text-status-error leading-3.5"
   >
     {{ label }}
   </p>

@@ -1,0 +1,17 @@
+# Technical documentation
+
+This documentation contains some technical aspects and choices made in the application.
+
+## Server API parameters
+
+For convenience or security purposes, a certain numenclature is used for a few server apis payload keys.
+
+### Branch
+
+The branch parameter is used to specify the type of encryption to be applied to a specific string. It can take two values: `multiply` or `divide`.
+
+ - Multiply: The string is encoded
+ - Divide: The string is decoded
+
+An example of its use is at the server api: **/mutate/key.post.ts**
+

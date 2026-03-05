@@ -4,12 +4,19 @@ definePageMeta({
 })
 
 const config = useRuntimeConfig()
-const { $apiFetch } = useNuxtApp() as any
 const { t, locale } = useI18n()
+const { e } = useNotify()
+
+useHead({
+  title: `${t('meta.title.login')} - ${config.public.app.name}`,
+  meta: [{ name: 'description', content: 'My design project application.' }],
+})
+
+const { $apiFetch } = useNuxtApp() as any
 const authStore = useAuthStore()
+const bankStore = useBankStore()
 const showPass = ref(false)
 const isLoading = ref(false)
-const { e } = useNotify()
 const validErrorMsg = ref({
   username: '',
   secret: '',
@@ -18,11 +25,6 @@ const form = ref({
   username: '',
   secret: '',
   lang: locale.value,
-})
-
-useHead({
-  title: `${t('meta.title.login')} - ${config.public.app.name}`,
-  meta: [{ name: 'description', content: 'My design project application.' }],
 })
 
 const passwordFieldType = computed(() => (showPass.value ? 'text' : 'password'))
@@ -44,7 +46,7 @@ const submit = async () => {
       {
         method: 'POST',
         body: form.value,
-      }
+      },
     )
 
     if (validError) {
@@ -60,9 +62,10 @@ const submit = async () => {
     }
 
     if (apiResponse) {
-      authStore.store(apiResponse)
+      authStore.store(apiResponse.user)
+      bankStore.store(apiResponse.accounts)
 
-      const redirect = apiResponse.firstAttempt
+      const redirect = apiResponse.user.firstAttempt
         ? config.public.page.forgotPwd
         : config.public.page.clientBoard
 
@@ -82,7 +85,7 @@ const submit = async () => {
 <template>
   <div class="mx-auto w-92">
     <h2
-      class="pb-4 text-2xl lg:text-3xl font-bold text-center underline decoration-auth-form-title-decoration decoration-2 underline-offset-10 text-auth-text-primary"
+      class="pb-4 text-2xl lg:text-3xl font-bold text-center underline decoration-accent decoration-2 underline-offset-10 text-white"
     >
       {{ $t('page.login.form_title') }}
     </h2>
@@ -103,7 +106,7 @@ const submit = async () => {
 
         <span
           v-if="validErrorMsg.username.trim().length > 0"
-          class="text-xs font-semibold transition duration-200 ease-linear text-validation-error"
+          class="text-xs font-semibold transition duration-200 ease-linear text-status-error"
         >
           {{ validErrorMsg.username }}
         </span>
@@ -122,38 +125,30 @@ const submit = async () => {
             <i
               v-if="showPass"
               @click.prevent="hidingPassword"
-              class="text-input-pwd-svg pi pi-eye"
+              class="text-text-secondary pi pi-eye"
             />
 
             <i
               v-else
               @click.prevent="showingPassword"
-              class="text-input-pwd-svg pi pi-eye-slash"
+              class="text-text-secondary pi pi-eye-slash"
             />
           </input-addon-transparent>
         </input-group>
 
         <span
           v-if="validErrorMsg.secret.trim().length > 0"
-          class="text-xs font-semibold transition duration-200 ease-linear text-validation-error"
+          class="text-xs font-semibold transition duration-200 ease-linear text-status-error"
         >
           {{ validErrorMsg.secret }}
         </span>
       </div>
 
       <button-primary
-        type="submit"
+        :type="$t('button.submit')"
         :label="$t('button.login')"
         :loading="isLoading"
       />
-
-      <!-- <p
-        class="text-sm text-center underline decoration-link-decoration hover:decoration-link-hover-decoration decoration-1 underline-offset-4 text-link hover:text-link-hover"
-      >
-        <nuxt-link to="/">
-          {{ $t('page.login.forgot_password') }}
-        </nuxt-link>
-      </p> -->
     </form>
   </div>
 </template>

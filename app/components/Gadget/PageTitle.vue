@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-  <h3 class="text-page-title-text font-bold">
+  <h3 class="text-text-primary font-bold">
     {{ label }}
   </h3>
 </template>

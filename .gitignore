@@ -24,3 +24,5 @@ logs
 !.env.example
 TODO.mkd
 currency.mkd
+CLAUDE.md
+

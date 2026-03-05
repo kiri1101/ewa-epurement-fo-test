@@ -1,61 +1,62 @@
 <script setup lang="ts">
-const assetStore = useAssetStore()
-const showLoader = ref(true)
-
-onMounted(() => {
-    showLoader.value = assetStore.hasAssets ? false : true
-})
-
-const cardStyles = computed(() => ({
-    backgroundImage: showLoader.value ? '' : `url(${assetStore.list.account_bg})`,
-}))
+defineProps<{
+  account: AccountModel
+}>()
 </script>
 
 <template>
-    <card-active-skeleton :card-styles="cardStyles">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-                <div>
-                    <skeleton v-if="showLoader" width="3.5rem" height="2.1rem" />
-
-                    <img v-else :src="assetStore.list.logo"
-                        class="object-cover object-center w-14 bg-white p-2 rounded-md" alt="App Logo" />
-                </div>
-
-                <div>
-                    <h3 class="uppercase font-bold ">AFG Bank</h3>
-                    <h4>Compte courant</h4>
-                </div>
-            </div>
-
-            <button type="button" class="border border-[#00741D] bg-[#DDF8E5] text-[#00741D] rounded-xl px-2.5 py-0.5">
-                Active
-            </button>
+  <card-active-skeleton>
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <div>
+          <img
+            src="/images/logo.jpg"
+            class="object-cover object-center w-12 bg-bg-main p-1 rounded-sm"
+            alt="App Logo"
+          />
         </div>
 
-        <div class="mt-1">
-            <ul class="flex justify-between py-3 border-b border-black/20">
-                <li>
-                    <h3 class="font-bold">Agence</h3>
-                    <h3>Agence Paris Centre</h3>
-                </li>
-                <li>
-                    <h3 class="font-bold">Conseiller</h3>
-                    <h3>Marie Martin</h3>
-                </li>
-            </ul>
-
-            <p class="py-1.5 border-b border-black/20 text-input-disabled-text font-semibold text-sm">
-                FR76 1234 5678 9012 3456 7890 123
-            </p>
-
-            <div class="flex justify-between items-center pt-2.5">
-                <h3>Solde disponible</h3>
-
-                <span class="bg-white py-0.5 px-2.5 font-bold rounded-xl">
-                    20.000.000 XFA
-                </span>
-            </div>
+        <div>
+          <h3 class="uppercase font-bold">
+            {{ account?.bank }}
+          </h3>
+          <h4>{{ $t('page.account.account') }} {{ account?.accType }}</h4>
         </div>
-    </card-active-skeleton>
+      </div>
+
+      <!-- <button
+        type="button"
+        class="border border-status-success text-status-success rounded-lg px-2.5 py-0.5 bg-bg-main font-medium"
+      >
+        Active
+      </button> -->
+    </div>
+
+    <div class="mt-1">
+      <ul class="flex justify-between py-3 border-b border-primary-light">
+        <li>
+          <h3 class="font-bold">{{ $t('page.account.agency') }}</h3>
+          <h3>{{ account?.agency }}</h3>
+        </li>
+        <li>
+          <h3 class="font-bold">{{ $t('page.account.client') }}</h3>
+          <h3>{{ account?.client }}</h3>
+        </li>
+      </ul>
+
+      <p
+        class="py-1.5 border-b border-primary-light text-text-primary font-semibold text-sm"
+      >
+        {{ formatIban(account?.iBan) }}
+      </p>
+
+      <div class="flex justify-between items-center pt-2.5">
+        <h3>{{ $t('page.account.available_balance') }}</h3>
+
+        <span class="bg-bg-main py-0.5 px-2.5 font-bold rounded-xl">
+          xxx xxx xxx {{ account?.currency }}
+        </span>
+      </div>
+    </div>
+  </card-active-skeleton>
 </template>

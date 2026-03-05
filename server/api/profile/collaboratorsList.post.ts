@@ -30,8 +30,6 @@ export default defineEventHandler(async (event: H3Event) => {
           origin: config.private.origin.toUpperCase(),
         },
       }).catch(error => {
-        console.error('collaborator list api error: ', error)
-
         throw createError({
           statusCode: 500,
           statusText: t.server_api_failed,
@@ -46,8 +44,24 @@ export default defineEventHandler(async (event: H3Event) => {
         statusText: response?.pesake.details.pesakeDetail,
       })
     } else {
-      // name, role, createdAt, status, action
-      output = await saveCollaborators(event, response?.data.users)
+      output = response?.data.users.map((user: CollaboratorList) => {
+        return {
+          uuid: crypto.randomUUID(),
+          username: user.userPseudo,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          phoneCode: user.phoneCode,
+          phoneNumber: user.phoneNumber,
+          roles: user.bankinfo.roles,
+          bankName: user.bankinfo.bankName,
+          accountNumber: user.bankinfo.accountNumber,
+          accountBalance: user.bankinfo.bankBalance,
+          accountType: user.bankinfo.accountType,
+          createdAt: user.createdDate,
+          isActive: Boolean(user.isActive),
+        }
+      })
     }
   }
 

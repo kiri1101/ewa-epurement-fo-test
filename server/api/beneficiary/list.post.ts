@@ -2,6 +2,7 @@ import { fetch } from '~~/server/utils/fetch'
 import { z, errorMap } from '~~/server/utils/zod'
 import { loadLocale } from '~~/server/utils/locale'
 import type { H3Event } from 'h3'
+import moment from 'moment'
 
 type Response = {
   pesake: Pesake
@@ -49,7 +50,24 @@ export default defineEventHandler(async (event: H3Event) => {
         statusText: response?.pesake.details.pesakeDetail,
       })
     } else {
-      output = await saveBeneficiary(event, response?.data)
+      output = response?.data.map((data: BeneficiaryResponse) => {
+        return {
+          uuid: crypto.randomUUID(),
+          code: data.benefSlug,
+          type: data.benefType,
+          fullName: data.fullName,
+          country: data.country,
+          email: data.email,
+          phoneCode: data.phoneCode,
+          phoneNumber: data.phoneNumber,
+          address: data.address ?? '',
+          status: data.status,
+          bankName: data.bankDetails.bankName,
+          swiftBic: data.bankDetails.swiftBic,
+          iban: data.bankDetails.iban,
+          createdAt: moment(data.createdAt).format('YYYY-MM-DD'),
+        }
+      })
     }
   }
 

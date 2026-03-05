@@ -5,7 +5,7 @@ import type { H3Event } from 'h3'
 
 type Response = {
   pesake: Pesake
-  data: TransferTypeResponse[]
+  data: TransferTypeResponse
 }
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -49,7 +49,44 @@ export default defineEventHandler(async (event: H3Event) => {
         statusText: response?.pesake.details.pesakeDetail,
       })
     } else {
-      output = await saveTransferTypes(response?.data)
+      output = {
+        category: response?.data.requestCategory.map(
+          (cat: TransferTypeCategory) => {
+            return {
+              id: crypto.randomUUID(),
+              code: cat.unikCode,
+              name: cat.longLabel,
+            }
+          }
+        ),
+        type: response?.data.requestType.map((type: TransferType) => {
+          return {
+            id: crypto.randomUUID(),
+            code: type.demandeType,
+            name: type.demandeTypeName,
+            category: {
+              code: type.requestCategory,
+            },
+            activateDom: Boolean(type.check_conciliation_required_above_amount),
+            domAmount: Number(
+              type.conciliation_required_above_amount
+            ).toString(),
+            attachments: type.attachmentList.map(
+              (attachment: TransferTypeAttachmentResponse) => {
+                return {
+                  uuid: crypto.randomUUID(),
+                  code: attachment.fileTypeSlug,
+                  name: attachment.fileTypeName,
+                  category: attachment.fileTypeCat,
+                  isRequired: attachment.isRequired,
+                  forApuration: attachment.forApuration,
+                  forExecution: attachment.forExecution,
+                }
+              }
+            ),
+          }
+        }),
+      }
     }
   }
 

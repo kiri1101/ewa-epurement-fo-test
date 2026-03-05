@@ -2,7 +2,6 @@ import { fetch } from '~~/server/utils/fetch'
 import { z, errorMap } from '~~/server/utils/zod'
 import { loadLocale } from '~~/server/utils/locale'
 import type { H3Event } from 'h3'
-import { saveTransfer } from '~~/server/utils/transfer.db'
 
 type Response = {
   pesake: Pesake
@@ -35,7 +34,7 @@ export default defineEventHandler(async (event: H3Event) => {
           lang: payload.data.lang.toUpperCase(),
           origin: config.private.origin.toUpperCase(),
         },
-      }).catch(error => {
+      }).catch(() => {
         throw createError({
           statusCode: 500,
           statusText: t.server_api_failed,
@@ -50,7 +49,59 @@ export default defineEventHandler(async (event: H3Event) => {
         statusText: response?.pesake.details.pesakeDetail,
       })
     } else {
-      output = await saveTransfer(event, response?.data)
+      output = response?.data.map((transfer: TransferResponse) => {
+        return {
+          uuid: crypto.randomUUID(),
+          code: transfer.fileCode,
+          beneficiaryName: transfer.beneficiaryName,
+          clientName: transfer.clientName,
+          status: transfer.fileStatus,
+          accountCode: transfer.accountCode,
+          userCode: transfer.userSlug,
+          accountNumber: transfer.accountNumber,
+          accountType: transfer.accountType,
+          amount: transfer.amount,
+          balance: transfer.accountAmount,
+          bankAgency: transfer.agencyName,
+          isEngaged: transfer.shouldVerifyDocument === 0 ? true : false,
+          canValidate: Boolean(transfer.canValidateRequest),
+          canUpdate: Boolean(transfer.canCompleteRequest),
+          currency: transfer.demandeCurrency,
+          description: transfer.demandeDesc,
+          targetDate: transfer.scheduleDate,
+          supportCost: transfer.demandeSupport,
+          type: transfer.demandeTypeName,
+          createdAt: transfer.submittedDate,
+          attachments: transfer.demandeFilesUpload.map(
+            (attachment: TransferAttachmentResponse) => {
+              let status: 'validated' | 'rejected' | 'pending'
+              if (attachment.isValid === 1) {
+                status = 'validated'
+              } else if (attachment.isValid === 0) {
+                status = 'rejected'
+              } else {
+                status = 'pending'
+              }
+
+              return {
+                uuid: crypto.randomUUID(),
+                title: attachment.fileTypeLibc,
+                originalName: attachment.originalName,
+                fileType: attachment.fileTypeSlug,
+                demandCode: attachment.dmdeBenfSlug,
+                fileCategory: attachment.fileTypeCat,
+                isRequired: Boolean(attachment.isRequired),
+                isUploaded: Boolean(attachment.alreadyUploaded),
+                status: status,
+                canUpdate: Boolean(attachment.canEditFile),
+                link: attachment.shortLink,
+                boComment: attachment.fileComment,
+                clearanceComment: attachment.apurmentComment,
+              }
+            }
+          ),
+        }
+      })
     }
   }
 

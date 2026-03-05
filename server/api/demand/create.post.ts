@@ -6,7 +6,7 @@ import moment from 'moment'
 
 type Response = {
   pesake: Pesake
-  data: TransferResponse[]
+  data: DemandResponse[]
 }
 
 export default defineEventHandler(async (event: H3Event) => {
@@ -14,9 +14,16 @@ export default defineEventHandler(async (event: H3Event) => {
   const reqBody = await readBody(event)
   const lang = (reqBody.lang === 'fr' ? 'fr' : 'en') as 'en' | 'fr'
   const t = await loadLocale(lang)
-  let output: Response | null = null
+  let output = null
+  let url = ''
+  let response: Response | null = null
 
   const loginSchema = z.object({
+    demandId: z
+      .string({
+        error: () => ({ message: t.required }),
+      })
+      .optional(),
     type: z
       .string({
         error: () => ({ message: t.required }),
@@ -24,7 +31,7 @@ export default defineEventHandler(async (event: H3Event) => {
       .min(Number(config.private.validation.zod.min), {
         message: String(t.min).replaceAll(
           ':value',
-          String(config.private.validation.zod.min)
+          String(config.private.validation.zod.min),
         ),
       }),
     account: z
@@ -34,7 +41,7 @@ export default defineEventHandler(async (event: H3Event) => {
       .min(Number(config.private.validation.zod.min), {
         message: String(t.min).replaceAll(
           ':value',
-          String(config.private.validation.zod.min)
+          String(config.private.validation.zod.min),
         ),
       }),
     amount: z
@@ -44,7 +51,7 @@ export default defineEventHandler(async (event: H3Event) => {
       .min(Number(config.private.validation.zod.min), {
         message: String(t.min).replaceAll(
           ':value',
-          String(config.private.validation.zod.min)
+          String(config.private.validation.zod.min),
         ),
       }),
     currency: z
@@ -54,22 +61,36 @@ export default defineEventHandler(async (event: H3Event) => {
       .min(Number(config.private.validation.zod.min), {
         message: String(t.min).replaceAll(
           ':value',
-          String(config.private.validation.zod.min)
+          String(config.private.validation.zod.min),
         ),
       }),
-    targetDate: z.iso.datetime({
-      error: () => ({ message: t.date }),
+    targetDate: reqBody.targetDate
+      ? z.iso.datetime({
+          error: () => ({ message: t.date }),
+        })
+      : z.nullable(z.literal(null)),
+    domNumber: z.string({
+      error: () => ({ message: t.required }),
     }),
-    description: z
-      .string({
-        error: () => ({ message: t.required }),
-      })
-      .min(Number(config.private.validation.zod.min), {
-        message: String(t.min).replaceAll(
-          ':value',
-          String(config.private.validation.zod.min)
-        ),
-      }),
+    declareNum: z.string({
+      error: () => ({ message: t.required }),
+    }),
+    unikCode: z.string({
+      error: () => ({ message: t.required }),
+    }),
+    description:
+      reqBody.description.trim().length > 0
+        ? z
+            .string({
+              error: () => ({ message: t.required }),
+            })
+            .min(Number(config.private.validation.zod.min), {
+              message: String(t.min).replaceAll(
+                ':value',
+                String(config.private.validation.zod.min),
+              ),
+            })
+        : z.string().optional(),
     supportFee: z.literal(['beneficiary', 'client', 'both'], {
       error: () => ({ message: t.invalidType }),
     }),
@@ -80,7 +101,7 @@ export default defineEventHandler(async (event: H3Event) => {
       .min(Number(config.private.validation.zod.min), {
         message: String(t.min).replaceAll(
           ':value',
-          String(config.private.validation.zod.min)
+          String(config.private.validation.zod.min),
         ),
       }),
     engagement: z.boolean({
@@ -93,7 +114,7 @@ export default defineEventHandler(async (event: H3Event) => {
         }),
         z.string({
           error: () => ({ message: 'Provide a valid file' }),
-        })
+        }),
       )
       .refine(
         value =>
@@ -101,7 +122,7 @@ export default defineEventHandler(async (event: H3Event) => {
           reqBody.engagement,
         {
           message: 'Provide a valid file or select engagement',
-        }
+        },
       ),
     lang: z.literal(['en', 'fr'], {
       error: () => ({ message: t.invalidLang }),
@@ -111,7 +132,7 @@ export default defineEventHandler(async (event: H3Event) => {
   const api = fetch(event)
 
   const payload = await readValidatedBody(event, body =>
-    loginSchema.safeParse(body)
+    loginSchema.safeParse(body),
   )
 
   const supportFee = (supportFee: string) => {
@@ -124,7 +145,7 @@ export default defineEventHandler(async (event: H3Event) => {
         fee = 'CLIENT'
         break
       case 'both':
-        fee = 'BOTH'
+        fee = 'SHAREFEE'
         break
       default:
         fee = ''
@@ -133,46 +154,58 @@ export default defineEventHandler(async (event: H3Event) => {
     return fee
   }
 
-  const response: Response | null = payload.success
-    ? ((await api(config.private.api.transfer.create, {
-        method: 'POST',
-        body: {
-          demandeSlug: '',
-          demandeType: payload.data.type,
-          demandeBanckAccountSlug: payload.data.account,
-          demandeEtat: 'SUBMITTED',
-          demandeBenef: payload.data.beneficiaryCode,
-          demandeAmount: payload.data.amount,
-          demandeDevise: payload.data.currency,
-          demandeWantedDate: moment(payload.data.targetDate).format(
-            'YYYY-MM-DD'
-          ),
-          demandeDesc: payload.data.description,
-          demandeSupportFee: supportFee(payload.data.supportFee),
-          shouldVerifyDocument: Number(payload.data.engagement),
-          uploadedFiles: Object.values(payload.data.files),
-          lang: payload.data.lang.toUpperCase(),
-          origin: config.private.origin.toUpperCase(),
-        },
-      }).catch(error => {
-        throw createError({
-          statusCode: 500,
-          statusText: t.server_api_failed,
-        })
-      })) as Response | null)
-    : null
+  if (payload.success) {
+    url =
+      payload.data.demandId && payload.data.demandId.length > 0
+        ? config.private.api.transfer.update
+        : config.private.api.transfer.create
 
-  if (response) {
-    if (String(response?.pesake.code).length > 0) {
+    response = (await api(url, {
+      method: 'POST',
+      body: {
+        demandeSlug:
+          payload.data.demandId && payload.data.demandId.length > 0
+            ? payload.data.demandId
+            : '',
+        demandeType: payload.data.type,
+        demandeBanckAccountSlug: payload.data.account,
+        demandeEtat: 'SUBMITTED',
+        demandeBenef: payload.data.beneficiaryCode,
+        demandeAmount: payload.data.amount,
+        demandeDevise: payload.data.currency,
+        demandeWantedDate: payload.data.targetDate
+          ? moment(payload.data.targetDate).format('YYYY-MM-DD')
+          : null,
+        demandeDesc: payload.data.description,
+        demandeSupportFee: supportFee(payload.data.supportFee),
+        declarationNumber: payload.data.declareNum,
+        domiciliationNumber: payload.data.domNumber,
+        domiciliationUnikCode: payload.data.unikCode,
+        shouldVerifyDocument: Number(payload.data.engagement) === 1 ? 0 : 1,
+        uploadedFiles: Object.values(payload.data.files),
+        lang: payload.data.lang.toUpperCase(),
+        origin: config.private.origin.toUpperCase(),
+      },
+    }).catch(() => {
       throw createError({
         statusCode: 500,
-        statusText: response?.pesake.details.pesakeDetail,
+        statusText: t.server_api_failed,
       })
-    } else {
-      output = response
+    })) as Response | null
+
+    if (response) {
+      if (String(response?.pesake.code).length > 0) {
+        throw createError({
+          statusCode: 500,
+          statusText: response?.pesake.details.pesakeDetail,
+        })
+      } else {
+        output = {
+          message: response.data[0]?.message,
+          requestId: response.data[0]?.demandeSlug,
+        }
+      }
     }
-  } else {
-    output = null
   }
 
   return {
