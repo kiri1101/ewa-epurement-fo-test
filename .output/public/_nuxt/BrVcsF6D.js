@@ -1,1 +1,0 @@
-import{H as s,I as a,r as o}from"./-5Dqnc0P.js";const l=s("bank",()=>{const e=o([]);return{accounts:e,store:r=>e.value=r,clear:()=>e.value=[]}},{persist:{storage:a.localStorage(),key:"bank"}});export{l as u};
